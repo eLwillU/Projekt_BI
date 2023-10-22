@@ -7,7 +7,7 @@ Ein XML-Parser dient dazu, XML-Dokumente zu lesen und deren Struktur zu erkennen
 
 ### Was genau sind die "Definition Makros / "Parameter-Entity-Deklarationen auf p.29
 Wie bei JS => Variable wird erst später definiert und den Wert eingefügt. Man kann nicht nur auf Strings referenzieren, sondern auch auf ganze Elemente. Als Beispiel wird in diesem XML definiert, dass im ganzen Dokument `Grand Cru` auch als `&cg` eingefügt werden kann. Das `&` ist standardmässig das Zeichen um zu definieren, dass etwas eingefügt werden soll.
-```xml
+```XML
 <! ENTITY cg "Grand Cru"> wird eingesetzt als
 <wein><name> Chateau La Rose &cg; </name> </wein>
 ```
@@ -35,6 +35,13 @@ ELEMENT:
 ```DTD
 <!ELEMENT buch (titel, autor)>
 ```
+Das würde erlauben ein XML zu erstellen mit folgendem Aufbau (XML und DTD Definition fehlen):
+```XML
+<buch>
+    <titel></titel>
+    <autor></autor>
+</buch>
+```
 
 ATTLIST:
 - Mit ATTLIST werden die Attribute definiert, die ein bestimmtes Element haben kann.
@@ -42,7 +49,28 @@ ATTLIST:
 - Beispiel:
  ```DTD
   <!ATTLIST buch sprache CDATA "deutsch">
-  ```
+ ```
+In Kombination mit dem vorherigen Beispiel wäre also ein XML zu erstellen mit folgendem Aufbau möglich (XML und DTD Definition fehlen):
+```XML
+<buch sprache="deutsch">
+    <titel></titel>
+    <autor></autor>
+</buch>
+```
+Das vollständige Beispiel mit DTD würde so aussehen:
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE buch [
+    <!ELEMENT buch (titel, autor)>
+    <!ATTLIST buch sprache CDATA "deutsch">
+    <!ELEMENT titel (#PCDATA)>
+    <!ELEMENT autor (#PCDATA)>
+]>
+<buch sprache="deutsch">
+    <titel>Der Herr der Ringe</titel>
+    <autor>J.R.R. Tolkien</autor>
+</buch>
+```
 
 Zusammengefasst:
 - ELEMENT definiert die Struktur und Reihenfolge von XML-Elementen.</br>
@@ -65,8 +93,8 @@ Geben Sie für JAVA-Kriterien der "Wohlgeformtheit" an. Was unterscheidet diese 
 
 Kriterien:
 <ul>
-<li>Korrekte Syntax</li>
-<li>Korrekte Deklaration von Typen</li>
+<li>Korrekte Syntax: Z.B kann eine Funktion nur mit folgendem Syntax definiert werden `visibility-modifier return-type name (parameter...) {}`. Anderer Syntax wird nicht erlaubt, da der Code sonst nicht ausgeführt werden kann. </li>
+<li>Korrekte Deklaration von Typen: Einem String `BFH` darf nicht der Datentyp `int` gegeben werden. </li>
 <li>Kompilierbarkeit</li>
 <li>Java-Code kann ohne korrekte «Wohlgeformtheit» in Bezug auf die Syntax nicht ausgeführt bzw. kompiliert werden.</li>
 </ul>
@@ -141,7 +169,7 @@ Der Name vom Anbaugebiet ist ein Attribut weil es in der DTD so definiert wurde.
 <!ATTLIST anbaugebiet name CDATA #REQUIRED >
 <!ELEMENT weinname (#PCDATA)
 ```
-Weitere Gründe dafür sind, dass man dem Weinnamen allenfalls weitere Elemente, wie z. B. Marke, Zusatz (geschützt oder nicht) etc., mitgeben möchte.
+Im allgemeinen wäre sowohl ein Element wie auch ein Attribut valide um eine Information wie den Namen darzustellen. Es gibt aber gewisse Gründe wieso man eines davon bevorzugen könnte. Falls der Name weitere Informationen beinhält, wie zum Beispiel den Hersteller oder die Marke, dann bevorzugt man ein Element. Falls die Information atomar ist, also man sie nicht weiter untergliedern oder Informationen hinzufügen kann, ist ein Element die bessere Wahl. ZB für eine ID verwendet man am besten ein Attribut.
 
 Um nichtalkoholische Getränke zu verkaufen müssen z. B. folgende Elemente hinzugefügt werden:
 ```DTD
