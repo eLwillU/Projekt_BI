@@ -6,17 +6,33 @@
 Ein XML-Parser dient dazu, XML-Dokumente zu lesen und deren Struktur zu erkennen. Er stellt sicher, dass das Dokument den XML-Regeln entspricht. Ein XML-Prozessor hingegen führt spezifische Aufgaben mit XML-Daten aus, wie beispielsweise deren Transformation oder Abfrage. Während der Parser primär die Gültigkeit und Struktur von XML prüft, fokussiert sich der Prozessor auf die Verarbeitung und Manipulation dieser Daten.
 
 ### Was genau sind die "Definition Makros / "Parameter-Entity-Deklarationen auf p.29
-Wie bei JS => Variable wird erst später definiert und den Wert eingefügt. Man kann nicht nur auf Strings referenzieren, sondern auch auf ganze Elemente 
+Wie bei JS => Variable wird erst später definiert und den Wert eingefügt. Man kann nicht nur auf Strings referenzieren, sondern auch auf ganze Elemente. Als Beispiel wird in diesem XML definiert, dass im ganzen Dokument `Grand Cru` auch als `&cg` eingefügt werden kann. Das `&` ist standardmässig das Zeichen um zu definieren, dass etwas eingefügt werden soll.
+```xml
+<! ENTITY cg "Grand Cru"> wird eingesetzt als
+<wein><name> Chateau La Rose &cg; </name> </wein>
+```
+Man kann auch Elemente mit dieser Funktionalität definieren und einfügen. Zum Beispiel hier wird definiert, wie ein `Adresselement` aussehen muss. Dies kann dann später an anderen Stellen eingefügt werden um Platz zu sparen:
+```XML
+<!ENTITY %adresselement "(ort, plz, strasse)" >
+```
+Daraus resultiert, dass die folgenden beiden Beispiele equivalent zueinander sind:
+```XML
+<! ELEMENT adresse %adresselement; >
+```
+
+```XML
+<!ELEMENT adresse (ort, plz, strasse) >
+```
 
 ### Unterschied zwischen ATTLIST und ELEMENT bei XML
 
-In XML-DTDs (Document Type Definitions) werden ATTLIST und ELEMENT verwendet, um die Struktur und die Eigenschaften von XML-Dokumenten zu definieren. Beide haben unterschiedliche Rollen.
+In XML-DTDs (Document Type Definitions) werden ATTLIST und ELEMENT verwendet, um die Struktur und die Eigenschaften von XML-Dokumenten zu definieren. Beide haben unterschiedliche Rollen und tangieren jeweils andere Bausteine von XML. [Hier noch ein Link der das ganze gut darstellt.](https://www.a-coding-project.de/ratgeber/xml/document-type-definition-dtd)
 
 ELEMENT:
-- Mit ELEMENT wird die Struktur eines XML-Dokuments beschrieben.
+- Mit ELEMENT wird die allgemeine Struktur eines XML-Dokuments beschrieben.
 - Es definiert, welche Elemente (Tags) im XML-Dokument erlaubt sind und wie diese Elemente miteinander in Beziehung stehen (z.B. welche Kinder-Elemente sie haben dürfen).
 - Beispiel:
-```
+```DTD
 <!ELEMENT buch (titel, autor)>
 ```
 
@@ -24,7 +40,7 @@ ATTLIST:
 - Mit ATTLIST werden die Attribute definiert, die ein bestimmtes Element haben kann.
 - Es gibt auch die Möglichkeit, Standardwerte oder Wertebereiche für Attribute festzulegen.
 - Beispiel:
- ```
+ ```DTD
   <!ATTLIST buch sprache CDATA "deutsch">
   ```
 
