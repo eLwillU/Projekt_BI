@@ -102,7 +102,21 @@ Der Public Identifier wird oft verwendet, um auf eine spezifische DTD-Version od
 
 ### Besonders im Kontext von den Java API's. Was bei den vielen APIs ist ein Parser und was nicht? --> dieser Teil verwirrt mich am meisten: "Für diese gibt es unterschiedliche Implementationen, also Parser" (p.34)
 
-TODO:
+#### APIs
+
+APIs definieren, wie Interaktionen mit bestimmten Softwarekomponenten aussehen sollten. Im Kontext von XML bieten diese APIs unterschiedliche Mechanismen, um XML-Daten zu lesen und/oder zu schreiben.
+
+DOM (Document Object Model): Dies ist eine baumbasierte API, die es ermöglicht, XML-Dokumente vollständig in den Speicher zu laden, wodurch beliebige Teile des Dokuments gelesen, geändern, hinzugefüght oder gelöschen werden können.
+
+SAX (Simple API for XML): Dies ist eine ereignisbasierte API, bei der man Callback-Methoden bereitstellt, die aufgerufen werden, wenn der Parser durch das XML-Dokument geht. Dies ist besonders nützlich für sehr umfangreiche Dokumente, die nicht vollständig in den Speicher geladen werden sollten.
+
+StAX (Streaming API for XML): Dies ist ebenfalls eine Streaming-API, ähnlich wie SAX, aber sie gibt dem Entwickler mehr Kontrolle über das XML-Parsing. Während SAX von oben nach unten arbeitet, kann StAX sowohl von oben nach unten als auch von unten nach oben arbeiten. Dazu kommt, dass StAX auch stehenbleiben kann und erst auf "Befehl" weiterliest.
+
+#### Parser
+
+Ein Parser ist eine konkrete Implementierung einer dieser APIs. Während die API die "Regeln" oder das "Interface" definiert, ist der Parser die tatsächliche Software, die diese Regeln umsetzt. Es gibt verschiedene Parser, die die gleiche API implementieren können.
+
+Für die genannten APIs (DOM, SAX, StAX) gibt es verschiedene konkrete Parser-Implementierungen (z. B. Xerces, Crimson), die diese APIs umsetzen.
 
 ## Hausaufgaben
 
