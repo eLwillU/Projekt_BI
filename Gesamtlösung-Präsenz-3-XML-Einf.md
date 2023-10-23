@@ -164,7 +164,12 @@ Bei XML sind alle Werte von Attributen in Anführungs- und Schlusszeichen verpac
 
 Bei XML haben alle Tags die geöffnete werden auch einen Gegenpart, welchen den Tag wieder schliesst (siehe `<guest>` `</guest>`). Es ist zu beachten, dass es bei XML auch selbstschliessende Tags gibt, z. B. \<snack />.
 
-TODO: Evtl. Self Closing Tags erklären.
+In der DTD werden sie Selfclosing-Tags auch definiert, dies geschieht so:
+
+```DTD
+<!ELEMENT elementname EMPTY>
+```
+
 
 #### Falsch:
 
