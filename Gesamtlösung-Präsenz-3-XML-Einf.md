@@ -100,7 +100,7 @@ Ein Public Identifier ist ein Bestandteil einer Dokumenttypdeklaration (DOCTYPE)
 
 Der Public Identifier wird oft verwendet, um auf eine spezifische DTD-Version oder eine XML-Schema-Definition zu verweisen, die die Regeln und die Struktur für ein Dokument dieses Typs definiert. Es hilft Browsern und Parsern, das richtige "Regelwerk" für die Interpretation und Validierung des Dokuments zu bestimmen.
 
-### Besonders im Kontext von den Java API's. Was bei den vielen APIs ist ein Parser und was nicht? --> dieser Teil verwirrt mich am meisten: "Für diese gibt es unterschiedliche Implementationen, also Parser" (p.34)
+### Besonders im Kontext von den Java API's. Was bei den vielen APIs ist ein Parser und was nicht? 
 
 #### APIs
 
