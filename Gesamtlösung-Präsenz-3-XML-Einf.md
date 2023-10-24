@@ -146,17 +146,17 @@ Nutzen Sie den XML-Validator, um Fehler in folgendem Code zu finden & zu verbess
 </party>
 ```
 
-#### Lösung:
+**Lösung:**
 
 Bei XML sind alle Werte von Attributen in Anführungs- und Schlusszeichen verpackt (siehe drunk="T").
 
-#### Falsch:
+**Falsch:**
 
 ```xml
 <party date="31.12.01" drunk=T>
 ```
 
-#### Richtig:
+**Richtig:**
 
 ```xml
 <party date="31.12.01" drunk=”T”>
@@ -171,7 +171,7 @@ In der DTD werden sie Selfclosing-Tags auch definiert, dies geschieht so:
 ```
 
 
-#### Falsch:
+**Falsch:**
 
 ```xml
 <party date="31.12.01" drunk=”T”>
@@ -180,7 +180,7 @@ In der DTD werden sie Selfclosing-Tags auch definiert, dies geschieht so:
 </party>
 ```
 
-#### Richtig:
+**Richtig:**
 
 ```xml
 <party date="31.12.01" drunk=”T”>
@@ -190,7 +190,7 @@ In der DTD werden sie Selfclosing-Tags auch definiert, dies geschieht so:
 </party>
 ```
 
-#### Gesamtlösung:
+**Gesamtlösung:**
 
 ```xml
 <party date="31.12.01" drunk=”T”>
