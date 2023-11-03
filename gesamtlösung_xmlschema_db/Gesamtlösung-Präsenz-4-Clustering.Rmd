@@ -1,0 +1,37 @@
+---
+title: "Gesamtlösung-Präsenz-4-Clustering.Rmd"
+output: html_document
+---
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+# Student*innen-Fragen
+
+## Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
+
+## Dendrogram Aussage auf Foliensatz 13 etwas unklar
+
+## Wie interpretiert man den "silhouette" command?
+
+## Aufgabe e) bitte zusammen anschauen und besprechen. 
+
+
+# Hausaufgaben
+
+## Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
+
+## Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
+
+## Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
+
+## Was sind Vor- und Nachteile von kmeans gegenüber hclust
+
+## Zielfunktion bei k-Means hat man L=∑_(j=1)^k▒∑_(x_i∈S_j)▒‖x_i-μ_j ‖^2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
+
+
+# Übungsaufgaben
+
+## Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
+
+## Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
