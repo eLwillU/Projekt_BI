@@ -384,7 +384,7 @@ momentanigen Cluster passt und negative Werte, dass er schlecht zu
 seinem momentanigen Cluster passt und wahrschinlich dem falschen Cluster
 zugeordnet ist. Ein neutraler Wert von 0 bedeutet, dass er eigentlich zu
 keinem der Cluster passt. Man spricht von einem starken Zusammenhang (ob
-positiv oder negativ ist egal) ab einem Wert von über 0.75.</p>
+positiv oder negativ ist egal) ab einem Wert von über | 0.75 |.</p>
 <p>Im Output von R kann man gut sehen, dass zumindest die ersten 10
 Werte des Clusters 1 sehr gut zum Cluster 1 passen im Vergleich zum
 nächsten Cluster 2. Man kann also davon ausgehen, dass sich diese Punkte
@@ -633,6 +633,61 @@ L = \sum_{i=1}^{k} \sum_{\mathbf{x}_{j} \in S_{i}} ||\mathbf{x}_{j} -
 </div>
 <div id="übungsaufgaben" class="section level1">
 <h1>3.0 Übungsaufgaben</h1>
+<p>Um den Bike Datensatz benutzen zu können, müssen wir ihn zuerst noch
+vorbereiten. Dazu führe ich einfach den R-code aus dem Lösungsdokument
+02 aus:</p>
+<pre class="r"><code>library(dplyr)
+library(stringr)
+
+## inkosistenzen 
+# das muss man eventuell anpassen
+bike &lt;- read.csv(&quot;bike.csv&quot;, stringsAsFactors = FALSE)
+# alle buchstaben entfernen
+bike &lt;- bike %&gt;%
+  mutate(humidity = gsub(&#39;[a-z A-Z]&#39;,&#39;&#39;,humidity))
+
+# casting
+# auf richtigen datentyp casten
+bike$humidity &lt;- as.numeric(bike$humidity)
+bike$holiday &lt;- factor(bike$holiday, levels = c(0, 1), labels = c(&quot;no&quot;, &quot;yes&quot;))
+bike$workingday &lt;- factor(bike$workingday, levels = c(0, 1), labels = c(&quot;no&quot;, &quot;yes&quot;))
+bike$season &lt;- factor(bike$season, levels = c(1, 2, 3, 4), labels = c(&quot;spring&quot;,
+                                                                      &quot;summer&quot;, &quot;fall&quot;, &quot;winter&quot;), ordered = TRUE )
+bike$weather &lt;- factor(bike$weather, levels = c(1,2,3,4), labels = c(&quot;clear&quot;,&quot;mist + cloudy&quot;, &quot;light rain/snow&quot;, &quot;heavy rain&quot;))
+bike$casual &lt;- as.numeric(bike$casual)
+bike$registered &lt;- as.numeric(bike$registered)
+bike$count &lt;- as.numeric(bike$count)
+
+
+# strings zu datum machen
+library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>bike &lt;- bike %&gt;%
+  mutate(datetime = mdy_hm(datetime))
+
+# adapt
+# duplicates zusammenfC&lt;hren mit string cleaning
+unique(bike$sources)</code></pre>
+<pre><code>##  [1] &quot;ad campaign&quot;      &quot;www.yahoo.com&quot;    &quot;www.google.fi&quot;    &quot;AD campaign&quot;     
+##  [5] &quot;Twitter&quot;          &quot;www.bing.com&quot;     &quot;www.google.co.uk&quot; &quot;facebook page&quot;   
+##  [9] &quot;Ad Campaign&quot;      &quot;Twitter    &quot;      NA                 &quot;www.google.com&quot;  
+## [13] &quot;direct&quot;           &quot;blog&quot;</code></pre>
+<pre class="r"><code>bike$sources &lt;- tolower(bike$sources)
+bike$sources &lt;- str_trim(bike$sources)
+na_loc &lt;- is.na(bike$sources)
+bike$sources[na_loc] &lt;- &quot;unknown&quot;
+
+#Missing Values
+
+bike &lt;- na.omit(bike)
+
+#Ausreisser 
+outlier_values &lt;- boxplot.stats(bike$windspeed)$out
+bike[bike$windspeed %in% outlier_values, &quot;windspeed&quot;] &lt;- NA</code></pre>
 <div id="führen-sie-das-hierarchische-clustering-auf-dem-bike-datensatz-durch.-definieren-sie-dazu-welche-variablen-eingehen-sollen.-interpretieren-sie-das-ergebnis-anhand-eines-dendogramms" class="section level3">
 <h3>3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz
 durch. Definieren Sie dazu, welche Variablen eingehen sollen.

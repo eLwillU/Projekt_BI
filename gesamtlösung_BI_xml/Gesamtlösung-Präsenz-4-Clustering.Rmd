@@ -210,6 +210,54 @@ $$
   
 
 # 3.0 Übungsaufgaben
+Um den Bike Datensatz benutzen zu können, müssen wir ihn zuerst noch vorbereiten.
+Dazu führe ich einfach den R-code aus dem Lösungsdokument 02 aus:
+
+```{r}
+library(dplyr)
+library(stringr)
+
+## inkosistenzen 
+# das muss man eventuell anpassen
+bike <- read.csv("bike.csv", stringsAsFactors = FALSE)
+# alle buchstaben entfernen
+bike <- bike %>%
+  mutate(humidity = gsub('[a-z A-Z]','',humidity))
+
+# casting
+# auf richtigen datentyp casten
+bike$humidity <- as.numeric(bike$humidity)
+bike$holiday <- factor(bike$holiday, levels = c(0, 1), labels = c("no", "yes"))
+bike$workingday <- factor(bike$workingday, levels = c(0, 1), labels = c("no", "yes"))
+bike$season <- factor(bike$season, levels = c(1, 2, 3, 4), labels = c("spring",
+                                                                      "summer", "fall", "winter"), ordered = TRUE )
+bike$weather <- factor(bike$weather, levels = c(1,2,3,4), labels = c("clear","mist + cloudy", "light rain/snow", "heavy rain"))
+bike$casual <- as.numeric(bike$casual)
+bike$registered <- as.numeric(bike$registered)
+bike$count <- as.numeric(bike$count)
+
+
+# strings zu datum machen
+library(lubridate)
+bike <- bike %>%
+  mutate(datetime = mdy_hm(datetime))
+
+# adapt
+# duplicates zusammenfC<hren mit string cleaning
+unique(bike$sources)
+bike$sources <- tolower(bike$sources)
+bike$sources <- str_trim(bike$sources)
+na_loc <- is.na(bike$sources)
+bike$sources[na_loc] <- "unknown"
+
+#Missing Values
+
+bike <- na.omit(bike)
+
+#Ausreisser 
+outlier_values <- boxplot.stats(bike$windspeed)$out
+bike[bike$windspeed %in% outlier_values, "windspeed"] <- NA
+```
 
 ### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
