@@ -276,15 +276,36 @@ bike$sources <- str_trim(bike$sources)
 na_loc <- is.na(bike$sources)
 bike$sources[na_loc] <- "unknown"
 
-#Missing Values
+#Remove missing Values
+bike <- bike %>% select_if(~ !any(is.na(.)))
 
-bike <- na.omit(bike)
-
-#Ausreisser 
-outlier_values <- boxplot.stats(bike$windspeed)$out
-bike[bike$windspeed %in% outlier_values, "windspeed"] <- NA
 ```
 
 ### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
 ### 3.2 Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
+
+Als Grundlage verwenden wir den gereinigten Bike Datensatz. Due erste Frage die wir uns stellen
+ist, welche Werte wir für die Analyse verwenden wollen. Alle kategoriellen Variablen
+müssen wir ignorieren (wir können sie dann später benutzen zum validieren). Der Datensatz
+hat ziemlich viele stetige Wetterdaten. Für diese Analyse werde ich einen Teil
+der Wetterdaten benutzen. Dann noch den "count" Wert, was die Anzahl and Vermietungen ist.
+Zusätzlich skalieren wir die Daten auch diesmal:
+```{r}
+library(dplyr)
+
+bike_copy <- bike
+bike_filtered <- bike %>% select(temp, atemp, humidity, windspeed)
+bike_filtered <- scale(bike_filtered)
+```
+
+
+Irgwendwie kann ich keine Aussage machen??
+```{r}
+kmeans_result <- kmeans(bike_filtered, centers = 4)
+
+# Füge die Cluster-Zuweisungen zum bike datensatz hinzu
+bike_copy$cluster <- factor(kmeans_result$cluster)
+
+table(bike_copy$weather, bike_copy$cluster)
+```
