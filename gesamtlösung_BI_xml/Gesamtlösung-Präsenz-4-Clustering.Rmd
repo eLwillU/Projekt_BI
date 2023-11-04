@@ -12,6 +12,32 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ### 1.1 Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
 
 ### 1.2 Dendrogram Aussage auf Foliensatz 13 etwas unklar
+Bei einem Dendrogram sind die Achsen wie folgt:
+
+* Y-Achse: Distanzen der Datenpunkte. Falls sich also tiefer unten ein Cluster bildet, bedeutet das, dass die zwei Cluster eine kleine Distanz haben, weiter oben eine grosse. 
+* X-Achse: Das sind die einzelnen Datenpunkte
+
+Die Aussage ist nun, dass Cluster die sehr weit unten fusioniert wurden, wahrscheinlich nicht aussagekräftig genug sind.
+Dies ist so, weil es wahrscheinlich noch weitere Datenpunkte gibt die zu diesem Datenpunkt gehören. 
+Der Cluster ist also "noch nicht abgeschlossen". Falls es aber nun einen grossen Abstand auf
+der Y-Achse vom letzten und jetzigen fusionierten Cluster gibt, spricht das dafür, dass dieser
+Cluster aussagekräftig ist und die Struktur der Daten gut beschreibt. Dies ist so weil der
+grosse Abstand darauf hindeutet, dass es einen grossen Abstand zwischen den Clustern gibt und
+diese nicht fusioniert werden sollten.
+
+Wie würde man dieses Dendrogram nun analysieren:
+
+Zuerst einmal sieht man, dass es weiter unten sehr viele, sehr nach zueinander 
+stehende Fusionen gibt. Im ganzen blauen Bereich würde ich also sicher nicht 
+"den Baum schneiden". Diese Cluster sagen einfach zu wenig über die Struktur der
+Daten aus (Y-Achsen Distanzen zu klein). Über dem Blauen Bereich sieht man nun, dass
+die Distanzen von Fusion zu Fusion grösser werden. Ein idealer Punkt meiner Meinung
+nach wäre damit die Rote Linie. Dort sind die Distanzen viel grösser und die
+Cluster sagen wahrscheinlich viel über die Struktur aus. Den Punkt 49 würde
+ich als streichen und als "Ausreisser" markieren, da er nicht ins sonstige Bild
+der Daten passt.
+
+![](dendrogram.PNG)
 
 ### 1.3 Wie interpretiert man den "silhouette" command?
 ![](silhouette.PNG)
