@@ -7,20 +7,49 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
 
-## Student*innen-Fragen
+## 1.0 Student*innen-Fragen
 
-### Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
+### 1.1 Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
 
-### Dendrogram Aussage auf Foliensatz 13 etwas unklar
+### 1.2 Dendrogram Aussage auf Foliensatz 13 etwas unklar
 
-### Wie interpretiert man den "silhouette" command?
+### 1.3 Wie interpretiert man den "silhouette" command?
+![](silhouette.PNG)
 
-### Aufgabe e) bitte zusammen anschauen und besprechen. 
+Der Silhoette command in R gibt an, wie gut ein Punkt zu seinem Cluster passt im vergleich zum nächstgelegensten Cluster.
+Der Output sind Werte von -1 bis 1. 
+Im Bild oben ist:
+
+* "o" der Datenpunkt den wir untersuchen
+* "A" der Cluster in dem sich "o" momentan befindet
+* "B" der Cluster der neben "o" am nächsten ist ("A" wird ignoriert)
+
+Der Wert wird nun so berechnet, dass die Differenz des Abstands von (A,o) und (B,o) berechnet wird 
+und dieser gewichtet wird mit dem maximalen Abstand von (A,o) und (B,o).
+
+Dabei sprechen positive Werte dafür, dass der Punkt "o" gut zu seinem momentanigen Cluster passt
+und negative Werte, dass er schlecht zu seinem momentanigen Cluster passt und wahrschinlich dem falschen Cluster zugeordnet ist. 
+Ein neutraler Wert von 0 bedeutet, dass er eigentlich zu keinem der Cluster passt. Man spricht von einem
+starken Zusammenhang (ob positiv oder negativ ist egal) ab einem Wert von über | 0.75 |.
+
+Im Output von R kann man gut sehen, dass zumindest die ersten 10 Werte des Clusters 1 sehr
+gut zum Cluster 1 passen im Vergleich zum nächsten Cluster 2. Man kann also davon ausgehen, dass
+sich diese Punkte im richtigen Cluster befinden.
+```{r}
+library(cluster)
+bike <- read.csv("bike.csv", stringsAsFactors = FALSE)
+bike.dist <- dist(bike[,c("temp", "casual", "registered", "windspeed")])
+bike.clust <- hclust(bike.dist)
+sil <- silhouette(cutree(bike.clust, 3), dist = bike.dist)
+head(sil, 10)
+```
+
+### 1.4 Aufgabe e) bitte zusammen anschauen und besprechen. 
 
 
-# Hausaufgaben
+# 2.0 Hausaufgaben
 
-### Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
+### 2.1 Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
 ![](cluster_links.PNG)
 
 Der Clustering Prozess ist iterativ und in jedem Schritt werden die zwei Cluster fusioniert, 
@@ -57,7 +86,7 @@ iris.dist = dist(iris.features, method="euclidean")
 iris.hclust = hclust(iris.dist, method = "complete")
 ```
 
-### Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
+### 2.2 Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
 Für diese Erklärung werde ich mich an [das Video aus den Folien](https://www.youtube.com/watch?v=q8G6iuZOWUw) halten und dieses erweitern.
 
 Wir verwenden bekannten den Iris-Datensatz. Dieser ist für uns besonders praktisch, da
@@ -122,7 +151,7 @@ iris_with_clust %>% group_by(groups.3) %>%
 table(groups.3, iris$Species)
 ```
 
-### Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
+### 2.3 Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
 
 ```{r}
 # Lade den Iris-Datensatz
@@ -151,7 +180,7 @@ ggplot(iris, aes(Petal.Length, Petal.Width, color=cluster)) +
   theme_minimal()
 ```
 
-### Was sind Vor- und Nachteile von kmeans gegenüber hclust
+### 2.4 Was sind Vor- und Nachteile von kmeans gegenüber hclust
 
 Vorteile:
 
@@ -168,7 +197,7 @@ entstehen.
 
 Ein Grundlegender Unterschied der zwei Modelle ist, dass Kmeans die Daten in die festgelegte Clusterzahl bringen muss. Hclust hingegen zeigt welche Cluster sich am ähnlichsten sind.
 
-### Zielfunktion bei k-Means hat man die untenstehende Formel mit der dazugehörigen Ableitung. 2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
+### 2.5 Zielfunktion bei k-Means hat man die untenstehende Formel mit der dazugehörigen Ableitung. 2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
 
 Die Kostenfunktion wird wie folgt definiert:
 
@@ -180,8 +209,8 @@ $$
 $$
   
 
-# Übungsaufgaben
+# 3.0 Übungsaufgaben
 
-### Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
+### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
-### Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
+### 3.2 Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
