@@ -1,37 +1,89 @@
 ---
-title: "Gesamtlösung-Präsenz-4-Clustering.Rmd"
+title: "Gesamtlösung Präsenz 4 Clustering"
 output: html_document
 ---
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
-# Student*innen-Fragen
 
-## Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
+## Student*innen-Fragen
 
-## Dendrogram Aussage auf Foliensatz 13 etwas unklar
+### Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
 
-## Wie interpretiert man den "silhouette" command?
+### Dendrogram Aussage auf Foliensatz 13 etwas unklar
 
-## Aufgabe e) bitte zusammen anschauen und besprechen. 
+### Wie interpretiert man den "silhouette" command?
+
+### Aufgabe e) bitte zusammen anschauen und besprechen. 
 
 
 # Hausaufgaben
 
-## Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
+### Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
 
-## Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
+### Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
 
-## Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
+### Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
 
-## Was sind Vor- und Nachteile von kmeans gegenüber hclust
+```{r}
+# Lade den Iris-Datensatz
+data(iris)
 
-## Zielfunktion bei k-Means hat man L=∑_(j=1)^k▒∑_(x_i∈S_j)▒‖x_i-μ_j ‖^2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
+# Setze einen Seed für reproduzierbare Ergebnisse
+set.seed(123) 
 
+# Entferne die Spezies
+iris_data <- iris[, -5]
+
+# Führe K-Means-Clustering mit 3 Clustern durch
+kmeans_result <- kmeans(iris_data, centers = 3)
+
+# Füge die Cluster-Zuweisungen zum Iris-Datensatz hinzu
+iris$cluster <- factor(kmeans_result$cluster)
+
+# Erstelle einen Plot, der die Cluster visualisiert
+library(ggplot2)
+ggplot(iris, aes(Petal.Length, Petal.Width, color=cluster)) +
+  geom_point(alpha=0.7, size = 3) +
+  labs(title = "K-Means Clustering des Iris-Datensatzes",
+       x = "Petal Length",
+       y = "Petal Width"
+       ) +
+  theme_minimal()
+```
+
+### Was sind Vor- und Nachteile von kmeans gegenüber hclust
+
+Vorteile:
+
+* Gut für grosse Datenmengen geeignet, weil es weniger rechenintensiv ist.
+* Das Verfahren ist einfach zu verstehen und kann einfach interpretiert werden.
+
+Nachteile:
+
+* Nach jeder Durchführung des K-Means Clustering können unterschledliche Cluster
+entstehen.
+* Man muss die Anzahl der Cluster im Vorhinein angeben, was nicht immer intuitiv oder leicht zu bestimmen ist.
+* Die Ergebnisse können stark von der initialen Wahl der Clusterzentren abhängen.
+* Ausreisser können das Ergebnis der Clusterbildung stark beeinflussen.
+
+Ein Grundlegender Unterschied der zwei Modelle ist, dass Kmeans die Daten in die festgelegte Clusterzahl bringen muss. Hclust hingegen zeigt welche Cluster sich am ähnlichsten sind.
+
+### Zielfunktion bei k-Means hat man die untenstehende Formel mit der dazugehörigen Ableitung. 2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
+
+Die Kostenfunktion wird wie folgt definiert:
+
+$$
+L = \sum_{i=1}^{k} \sum_{\mathbf{x}_{j} \in S_{i}} ||\mathbf{x}_{j} - \boldsymbol{\mu}_{i}||^{2}
+$$
+$$
+\frac{\partial L}{\partial \boldsymbol{\mu}_{1}} = \sum_{\mathbf{x}_{i} \in S_{j}} 2 ||\mathbf{x}_{j} -\boldsymbol{\mu}_{i}||
+$$
+  
 
 # Übungsaufgaben
 
-## Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
+### Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
-## Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
+### Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
