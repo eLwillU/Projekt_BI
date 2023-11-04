@@ -21,8 +21,106 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 # Hausaufgaben
 
 ### Beschreiben Sie in eigenen Worten, wie die Linkage-Varianten auf der Folie 10 jeweils funktionieren
+![](cluster_links.PNG)
+
+Der Clustering Prozess ist iterativ und in jedem Schritt werden die zwei Cluster fusioniert, 
+welche die geringste Distanz zueinander aufweisen.
+Diese Linkage-Verfahren bestimmen nun, wie die "Distanz" zwischen zwei Clustern definiert wird:
+
+* Single Linkage (nächst gelegener Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei nächst gelegenen Mitglieder.
+Für die Definition der Distanz werden also einfach die zwei nächsten Punkte genommen.
+Diese Methode hat einen entscheidenden Nachteil: Es kann schnell passieren, dass
+zwei Cluster fusioniert werden, die eigentlich nur zwei zueinander nahe Punkte haben,
+die restlichen Punkte aber weit voneinander entfernt sind. Dies nennt man dann
+"Kettenform" und das wird im nächsten Abschnitt noch einmal erklärt.
+
+* Sinlge Linkage (Kettenform): Nicht eine neue Linkage Methode. Zeigt aber genau das Problem auf, dass die Cluster eigentlich nicht zusammengehören aber aufgrund einer "kette" nun ein cluster sind. Der Cluster
+ganz links und unten rechts gehören eigentlich nicht zusammen, aber durch den Punkt
+zwischen den beiden werden sie trotzdem fusioniert.
+
+* Complete Linkage (entferntester Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei am weitesten entfernten Mitglieder. Dies verhindert das Problem der "Kettenbildung", führt aber ein anderes Problem ein. 
+Ausreisser können dazu führen, dass Cluster fälschlicherweise fusioniert werden.
+
+* Average Linkage: Die Distanz zwischen zwei Clustern ist der Durschnitt aller Distanzen von allen Punkten in den beiden Clustern.
+
+* Centroid Linkage: Distanz zwischen Clustern ist die Distanz ihrer centroide (center of gravity or mean point). 
+Dies ist in der Umsetzung dann relativ ähnlich zum "Average Linkage".
+
+* Ward Linkage: Ziel ist es Cluster zu haben mit einer minimierten "within-cluser variance". Die Methode sucht also die zwei Cluster, die beim Fusionieren zur kleinsten Vergrösserung der "sum of squared estimate of errors (SSE)" führt.
+Diese Methode ist besonders wertvoll, da man in der Statistik mit der Varianz oft sehr viel aussagen treffen kann.
+
+In R kann man die Linkage Methode wie folgt auswählen. Der Standard ist "complete":
+```{r}
+iris.features <- iris[,1:4]
+iris.dist = dist(iris.features, method="euclidean")
+# Möglichkeiten sind: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid"
+iris.hclust = hclust(iris.dist, method = "complete")
+```
 
 ### Führen Sie das hierarchische Clustering für den Iris-Datensatz durch und interpretieren Sie das Ergebnis anhand eines Dendogramms
+Für diese Erklärung werde ich mich an [das Video aus den Folien](https://www.youtube.com/watch?v=q8G6iuZOWUw) halten und dieses erweitern.
+
+Wir verwenden bekannten den Iris-Datensatz. Dieser ist für uns besonders praktisch, da
+wir ja schon wissen welche Cluster eigentlich generiert werden sollten. Idealerweise
+sollte unsere Clusteranalyse ein Resultat von 3 Cluster für die jeweiligen Spezies haben.
+
+Als erstes schauen wir uns den Datensatz mal noch etwas an. Wir sehen, 
+dass wir 4 stetige Variablen haben und einen Faktor (Spezies). Auch sehen wir, dass
+die Werte von den einzelnen Columns ziemlich unterschiedlich sind in ihrer Grössenordnung. 
+ZB sieht man Petal.Width hat einen Durchschnitt von 1.2 und Sepal.Length einen von 5.8.
+Diese Unterschiede könnten unser Clustering verzerren, da die Unterschiedlichen
+Grössenordnungen einen direkten Einfluss auf die Distanz haben. Deshalb werden wir unsere
+Daten noch skalieren. Auch werden wir den Faktor Spezies rausfiltern, da man mit diesem
+nicht eine Cluster-Analyse durchführen kann:
+```{r}
+summary(iris)
+
+iris_filtered <- iris[,1:4]
+iris_filtered <- scale(iris_filtered)
+
+summary(iris_filtered)
+```
+
+Nun führen wir die Cluster-Analyse durch mit der Ward-Methode für das Linkage 
+Verfahren und der euklidischen Distanz für die Distanzmessung. Anschliessend erstellen
+wir das Dendrogram:
+```{r}
+# Hier berechnen wir die Distanzen der Datenpunkte
+iris_filtered_distances <- dist(iris_filtered, method = "euclidean")
+# Hier führen wir das eigentliche Clustering druch
+iris.filtered_clustering <- hclust(iris_filtered_distances, method="ward.D2")
+# Hier erstellen wir das Dendrogram. Hang und Cex sollen den Output schöner aussehen lassen, aber mit vielen Datenpunkten ist das leider schwer.
+plot(iris.filtered_clustering, hang=-1, labels=iris$Species, cex=.7)
+```
+
+Das Dendrogram zeigt gut, dass es einen sehr schönen Cluster ganz links gibt. Dieser beinhaltet
+nur Datenpunkte einer einzigen Spezies. Bei den anderen zwei Clustern ist die Auftrennung
+leider nicht mehr so schön. Mit unserem Vorwissen, dass es 3 Spezies gibt, trennen wir 
+trotzdem mal nach 3 Clustern auf und analysieren das Ergebnis
+
+Man sieht bei der Analyse der Mittelwerte von Sepal.Length, dass die Cluster klare 
+Unterschiede zueinander haben. Cluster 1 hat die tiefsten und 3 die höchsten Werte.
+
+Wenn wir jetzt abgleichen mit der Spezies, sehen wir, dass der Cluster 1 fast nur 
+aus Setosa besteht. Dieser Cluster ist also sehr gut gelungen. Auch Cluster zwei ist 
+gut und besteht nur aus Versicolor. Cluster 3 scheint aber nicht so gut zu sein und hat
+einen Mix aus Versicolor und Virginica.
+```{r}
+library(dplyr)
+# Dendrogram bei 3 Clustern "schneiden"
+groups.3 <- cutree(iris.filtered_clustering, 3)
+# Sepal.Length anschauen
+iris_with_clust <- cbind(iris, groups.3)
+iris_with_clust %>% group_by(groups.3) %>%
+  summarise(
+    Mean = mean(Sepal.Length),
+    Median = median(Sepal.Length),
+    Min = min(Sepal.Length),
+    Max = max(Sepal.Length)
+  )
+# Gruppen vergleichen
+table(groups.3, iris$Species)
+```
 
 ### Führen Sie das kmeans-Clustering für den Iris-Datensatz durch
 
