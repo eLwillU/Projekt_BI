@@ -37,6 +37,14 @@ Cluster sagen wahrscheinlich viel über die Struktur aus. Den Punkt 49 würde
 ich als streichen und als "Ausreisser" markieren, da er nicht ins sonstige Bild
 der Daten passt.
 
+```{r}
+cars.dist=dist(cars, method = "minkowski")
+cars.hclust = hclust(cars.dist) # default: complete Linkage
+plot(cars.hclust)
+rect.hclust(cars.hclust, k=3, border="red")
+rect.hclust(cars.hclust, k=7, border="blue")
+```
+
 ![](dendrogram.PNG)
 
 ### 1.3 Wie interpretiert man den "silhouette" command?
@@ -146,6 +154,7 @@ iris_filtered_distances <- dist(iris_filtered, method = "euclidean")
 iris.filtered_clustering <- hclust(iris_filtered_distances, method="ward.D2")
 # Hier erstellen wir das Dendrogram. Hang und Cex sollen den Output schöner aussehen lassen, aber mit vielen Datenpunkten ist das leider schwer.
 plot(iris.filtered_clustering, hang=-1, labels=iris$Species, cex=.7)
+rect.hclust(iris.filtered_clustering, k=3, border="red")
 ```
 
 Das Dendrogram zeigt gut, dass es einen sehr schönen Cluster ganz links gibt. Dieser beinhaltet
