@@ -232,7 +232,7 @@ entstehen.
 
 Ein Grundlegender Unterschied der zwei Modelle ist, dass Kmeans die Daten in die festgelegte Clusterzahl bringen muss. Hclust hingegen zeigt welche Cluster sich am ähnlichsten sind.
 
-### 2.5 Zielfunktion bei k-Means hat man die untenstehende Formel mit der dazugehörigen Ableitung. 2  mit ∂L/(∂μ_1 )= ∑_(x_i∈S_j)▒2‖x_i-μ_j ‖ . Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
+### 2.5 Zielfunktion bei k-Means hat man die untenstehende Formel mit der dazugehörigen Ableitung. Wie sieht das Gradient-Descent-Verfahren für das Updaten der Mittelwerte aus? Was bedeuten dabei x_i,  μ_j und S_j?
 
 Die Kostenfunktion wird wie folgt definiert:
 
@@ -242,7 +242,16 @@ $$
 $$
 \frac{\partial L}{\partial \boldsymbol{\mu}_{1}} = \sum_{\mathbf{x}_{i} \in S_{j}} 2 ||\mathbf{x}_{j} -\boldsymbol{\mu}_{i}||
 $$
-  
+
+Die Zielfunktion des k-Means-Algorithmus, ist darauf ausgerichtet, die Summe der quadrierten Abstände zwischen den Datenpunkten und dem Mittelpunkt des ihnen zugeordneten Clusters zu minimieren. K-Means aktualisiert die Zentroide durch direktes Berechnen des Mittelwerts der ihnen zugeordneten Datenpunkte, ohne einen Gradienten zu verwenden. Auch dafür gibt es eine Formel:
+
+$$
+\boldsymbol{\mu}_i = \frac{1}{|S_i|} \sum_{\mathbf{x}_j \in S_i} \mathbf{x}_j
+$$
+
+der neue Mittelwert eines Clusters ist also der Durchschnitt aller Datenpunkte (x_i), die zu einem Cluster S_j gehören.
+
+Der Unterschied zum Gradienten ist, dass beim Gradienten der alte Mittelwert - Lernrate gerechnet wird. Dadurch wird die Steigung der Geraden immer kleiner und geht gegen 0. Beim Clustering ist dies nicht möglich, da wenn die Steigung = 0 ist, alle Punkte an einem Ort wären.
 
 # 3.0 Übungsaufgaben
 Um den Bike Datensatz benutzen zu können, müssen wir ihn zuerst noch vorbereiten.
@@ -291,6 +300,27 @@ bike <- bike %>% select_if(~ !any(is.na(.)))
 ```
 
 ### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
+
+```{r}
+# Auswahl der relevanten numerischen Variablen
+bike_copy <- bike %>%
+  sample_n(2500) %>%
+  select(temp, atemp, humidity, windspeed) 
+
+# Normalisierung der numerischen Daten
+bike_data_scaled <- scale(bike_copy)
+
+# Falls 'season' als Faktor verwendet werden soll, muss es separat behandelt werden
+# bike_data$season <- as.factor(bike_data$season)
+
+# Hierarchisches Clustering durchführen
+distance_matrix <- dist(bike_data_scaled)  # Distanzmatrix berechnen
+hclust_result <- hclust(distance_matrix)  # Hierarchisches Clustering durchführen
+
+# Dendrogramm zeichnen
+plot(hclust_result)
+```
+
 
 ### 3.2 Führen Sie das kmeans-Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis
 
