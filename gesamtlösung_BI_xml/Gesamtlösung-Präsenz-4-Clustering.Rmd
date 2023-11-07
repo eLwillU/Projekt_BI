@@ -340,12 +340,48 @@ bike_filtered <- scale(bike_filtered)
 ```
 
 
-Irgwendwie kann ich keine Aussage machen??
+Man sieht nun recht gut, dass der Cluster 1 zu den meisten verkäufen und 
+cluster 4 zu den wenigsten verkäufen geführt hat. Als Bike-Vermieter würde ich
+jetzt herausfinden was der Unterschied von Cluster 1 und 4 ist.
 ```{r}
+library(ggplot2)
 kmeans_result <- kmeans(bike_filtered, centers = 4)
 
 # Füge die Cluster-Zuweisungen zum bike datensatz hinzu
 bike_copy$cluster <- factor(kmeans_result$cluster)
+# schaue welche cluster wie viel vermietete bikes haben
+output <- bike_copy %>% group_by(cluster) %>% summarise(mean_bikes = mean(count))
 
-table(bike_copy$weather, bike_copy$cluster)
+
+ggplot(output, aes(x = factor(cluster), y = mean_bikes, fill = factor(cluster))) + 
+  geom_bar(stat = "identity", color = "black", show.legend = FALSE) +
+  scale_fill_viridis_d() +
+  labs(
+    title = "Cluster grössen und dazugehörige vermietete Bikes",
+    x = "Cluster",
+    y = "Anzahl an Vermieteten Bikes",
+    caption = "Bike Datensatz"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),
+    axis.title = element_text(size = 16),
+    axis.text = element_text(size = 12),
+    plot.caption = element_text(hjust = 0, size = 10),
+    panel.grid.minor = element_blank()
+  ) +
+  coord_flip()
+```
+
+Da wir nur Wetterdaten ins Clustering miteinbezogen haben, könnten wir die Hypothese
+aufstellen, dass gutes Wetter zu mehr Verkäufen führt. Das bringt zwar dem Besitzer
+des Ladens wenig, ist aber für uns trotzdem interessant:
+
+Man sieht ganz klar, die Temperatur ist des massgebende Faktor ob viel Bikes vermietet
+werden oder nicht. Das sieht man daran, dass die höchste Temperatur die beste Bike-Verkaufsrate aufzeigt.
+Die Luftfeuchtigkeit scheint auch einen Rinfluss zu haben. Cluster 3 hat mehr Verkäufe pro Tag 
+obwohl die Temperatur tiefer ist.
+```{r}
+bike_copy %>% group_by(cluster) %>% 
+  summarise(mean_temp = mean(temp), mean_humid = mean(humidity), mean_bikes = mean(count))
 ```
