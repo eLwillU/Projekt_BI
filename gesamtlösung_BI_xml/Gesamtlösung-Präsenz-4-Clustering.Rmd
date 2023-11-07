@@ -10,6 +10,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ## 1.0 Student*innen-Fragen
 
 ### 1.1 Bei der "dist()" methode, was genau ist der output? Verstehe, dass es die Distanzen der einzelnen Punkte zueinander sind und das diese dann für das Clustering genutzt werden, aber nicht was genau die row und column bedeuten
+Die Funktion "dist()" berechnet in R die Distanzen zwischen den Punkten und speichert diese in einer Matrix ab. Die Disanz hängt dabei von der gewählten Berechnungsmethode (z. B. Euclidean) ab. Die Matrix zeigt dann jeweils die Distanzen zu den jewiligen Punkten. Da die Distanz von Punkt A zu Punkt B gleich gross ist wie von Punkt B zu Punkt A, wird die Matrix aus Performanzgründen nicht komplett gefüllt. 
+
+![](distmatrix.png)
+
 
 ### 1.2 Dendrogram Aussage auf Foliensatz 13 etwas unklar
 Bei einem Dendrogram sind die Achsen wie folgt:
