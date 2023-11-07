@@ -49,7 +49,6 @@ rect.hclust(cars.hclust, k=3, border="red")
 rect.hclust(cars.hclust, k=7, border="blue")
 ```
 
-![](dendrogram.PNG)
 
 ### 1.3 Wie interpretiert man den "silhouette" command?
 ![](silhouette.PNG)
@@ -81,8 +80,6 @@ bike.clust <- hclust(bike.dist)
 sil <- silhouette(cutree(bike.clust, 3), dist = bike.dist)
 head(sil, 10)
 ```
-
-### 1.4 Aufgabe e) bitte zusammen anschauen und besprechen. 
 
 
 # 2.0 Hausaufgaben
@@ -306,23 +303,23 @@ bike <- bike %>% select_if(~ !any(is.na(.)))
 ### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
 ```{r}
+
+bike_sample <- sample_n(bike, 250)
 # Auswahl der relevanten numerischen Variablen
-bike_copy <- bike %>%
-  sample_n(2500) %>%
+bike_copy <- bike_sample %>%
   select(temp, atemp, humidity, windspeed) 
 
 # Normalisierung der numerischen Daten
 bike_data_scaled <- scale(bike_copy)
-
-# Falls 'season' als Faktor verwendet werden soll, muss es separat behandelt werden
-# bike_data$season <- as.factor(bike_data$season)
 
 # Hierarchisches Clustering durchführen
 distance_matrix <- dist(bike_data_scaled)  # Distanzmatrix berechnen
 hclust_result <- hclust(distance_matrix)  # Hierarchisches Clustering durchführen
 
 # Dendrogramm zeichnen
-plot(hclust_result)
+
+plot(hclust_result, hang=-1, labels=bike_sample$season, cex=.5)
+
 ```
 
 
