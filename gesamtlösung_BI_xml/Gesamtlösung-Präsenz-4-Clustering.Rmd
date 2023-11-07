@@ -44,7 +44,7 @@ der Daten passt.
 ```{r}
 cars.dist=dist(cars, method = "minkowski")
 cars.hclust = hclust(cars.dist) # default: complete Linkage
-plot(cars.hclust)
+plot(cars.hclust, hang=-1, cex=.7 ) # hang und cex dienen zur besseren Lesbarkeit.
 rect.hclust(cars.hclust, k=3, border="red")
 rect.hclust(cars.hclust, k=7, border="blue")
 ```
@@ -64,8 +64,8 @@ Im Bild oben ist:
 Der Wert wird nun so berechnet, dass die Differenz des Abstands von (A,o) und (B,o) berechnet wird 
 und dieser gewichtet wird mit dem maximalen Abstand von (A,o) und (B,o).
 
-Dabei sprechen positive Werte dafür, dass der Punkt "o" gut zu seinem momentanigen Cluster passt
-und negative Werte, dass er schlecht zu seinem momentanigen Cluster passt und wahrschinlich dem falschen Cluster zugeordnet ist. 
+Dabei sprechen positive Werte (möglichst nahe bei 1) dafür, dass der Punkt "o" gut zu seinem momentanigen Cluster passt
+und negative Werte (nahe bei -1), dass er schlecht zu seinem momentanigen Cluster passt und wahrschinlich dem falschen Cluster zugeordnet ist. 
 Ein neutraler Wert von 0 bedeutet, dass er eigentlich zu keinem der Cluster passt. Man spricht von einem
 starken Zusammenhang (ob positiv oder negativ ist egal) ab einem Wert von über | 0.75 |.
 
@@ -91,26 +91,26 @@ Der Clustering Prozess ist iterativ und in jedem Schritt werden die zwei Cluster
 welche die geringste Distanz zueinander aufweisen.
 Diese Linkage-Verfahren bestimmen nun, wie die "Distanz" zwischen zwei Clustern definiert wird:
 
-* Single Linkage (nächst gelegener Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei nächst gelegenen Mitglieder.
+* **Single Linkage**: (nächst gelegener Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei nächst gelegenen Punkten eines Clusters.
 Für die Definition der Distanz werden also einfach die zwei nächsten Punkte genommen.
 Diese Methode hat einen entscheidenden Nachteil: Es kann schnell passieren, dass
 zwei Cluster fusioniert werden, die eigentlich nur zwei zueinander nahe Punkte haben,
 die restlichen Punkte aber weit voneinander entfernt sind. Dies nennt man dann
 "Kettenform" und das wird im nächsten Abschnitt noch einmal erklärt.
 
-* Sinlge Linkage (Kettenform): Nicht eine neue Linkage Methode. Zeigt aber genau das Problem auf, dass die Cluster eigentlich nicht zusammengehören aber aufgrund einer "kette" nun ein cluster sind. Der Cluster
+* **Sinlge Linkage** (Kettenform): Nicht eine neue Linkage Methode. Zeigt aber genau das Problem auf, dass die Cluster eigentlich nicht zusammengehören aber aufgrund einer "Kette" nun ein cluster sind. Der Cluster
 ganz links und unten rechts gehören eigentlich nicht zusammen, aber durch den Punkt
 zwischen den beiden werden sie trotzdem fusioniert.
 
-* Complete Linkage (entferntester Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei am weitesten entfernten Mitglieder. Dies verhindert das Problem der "Kettenbildung", führt aber ein anderes Problem ein. 
+* **Complete Linkage**: (entferntester Nachbar): Die Distanz zwischen zwei Clustern ist die Distanz der zwei am weitesten entfernten Mitglieder. Dies verhindert das Problem der "Kettenbildung", führt aber ein anderes Problem ein. 
 Ausreisser können dazu führen, dass Cluster fälschlicherweise fusioniert werden.
 
-* Average Linkage: Die Distanz zwischen zwei Clustern ist der Durschnitt aller Distanzen von allen Punkten in den beiden Clustern.
+* **Average Linkage**: Die Distanz zwischen zwei Clustern ist der Durschnitt aller Distanzen von allen Punkten in den beiden Clustern.
 
-* Centroid Linkage: Distanz zwischen Clustern ist die Distanz ihrer centroide (center of gravity or mean point). 
+* **Centroid Linkage**: Distanz zwischen Clustern ist die Distanz ihrer centroide (center of gravity or mean point). 
 Dies ist in der Umsetzung dann relativ ähnlich zum "Average Linkage".
 
-* Ward Linkage: Ziel ist es Cluster zu haben mit einer minimierten "within-cluser variance". Die Methode sucht also die zwei Cluster, die beim Fusionieren zur kleinsten Vergrösserung der "sum of squared estimate of errors (SSE)" führt.
+* **Ward Linkage**: Ziel ist es Cluster zu haben mit einer minimierten "within-cluser variance". Die Methode sucht also die zwei Cluster, die beim Fusionieren zur kleinsten Vergrösserung der "sum of squared estimate of errors (SSE)" führt.
 Diese Methode ist besonders wertvoll, da man in der Statistik mit der Varianz oft sehr viel aussagen treffen kann.
 
 In R kann man die Linkage Methode wie folgt auswählen. Der Standard ist "complete":
