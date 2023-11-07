@@ -302,23 +302,26 @@ bike <- bike %>% select_if(~ !any(is.na(.)))
 
 ### 3.1 Führen Sie das hierarchische Clustering auf dem bike-Datensatz durch. Definieren Sie dazu, welche Variablen eingehen sollen. Interpretieren Sie das Ergebnis anhand eines Dendogramms
 
+Mit folgendem Code wird das hierarchische Clustering durchgeführt. Im vergleich zum Cars oder Iris Datensatz ist es hier schwierig eine klare Aussage anhand des Dendrogramms zu machen. Man kann vier grobe Cluster erkennen (hier rot). Die Tabelle zeigt auch die durchschnittlichen Fahrradverleihe pro "Season". Die vier ersichtlichen Cluster könnten nun ebenfalls diese vier Seasons wiederspiegeln.
+Je wärmer es also ist, desto mehr Fahrräder werden ausgeliehen. Dies wird beim k-means Clustering noch deutlicher ersichtlich.
+
 ```{r}
+library(ggplot2)
 
-bike_sample <- sample_n(bike, 250)
 # Auswahl der relevanten numerischen Variablen
-bike_copy <- bike_sample %>%
-  select(temp, atemp, humidity, windspeed) 
 
-# Normalisierung der numerischen Daten
-bike_data_scaled <- scale(bike_copy)
+bike_data <- bike %>% 
+  select(temp, atemp, humidity, windspeed, count)
+scaled_data <- scale(bike_data)
+distance_matrix <- dist(scaled_data, method="euclidean")
+hc <- hclust(distance_matrix, method = "complete")
 
-# Hierarchisches Clustering durchführen
-distance_matrix <- dist(bike_data_scaled)  # Distanzmatrix berechnen
-hclust_result <- hclust(distance_matrix)  # Hierarchisches Clustering durchführen
+cluster_summary <- aggregate(scaled_data, by = list(bike$season), FUN = mean)
+print(cluster_summary)
 
 # Dendrogramm zeichnen
-
-plot(hclust_result, hang=-1, labels=bike_sample$season, cex=.5)
+plot(hc, hang=-1, labels=bike$season, cex=.5)
+rect.hclust(hc, k=4, border="red")
 
 ```
 
@@ -379,7 +382,7 @@ des Ladens wenig, ist aber für uns trotzdem interessant:
 
 Man sieht ganz klar, die Temperatur ist des massgebende Faktor ob viel Bikes vermietet
 werden oder nicht. Das sieht man daran, dass die höchste Temperatur die beste Bike-Verkaufsrate aufzeigt.
-Die Luftfeuchtigkeit scheint auch einen Rinfluss zu haben. Cluster 3 hat mehr Verkäufe pro Tag 
+Die Luftfeuchtigkeit scheint auch einen Einfluss zu haben. Cluster 3 hat mehr Verkäufe pro Tag 
 obwohl die Temperatur tiefer ist.
 ```{r}
 bike_copy %>% group_by(cluster) %>% 
