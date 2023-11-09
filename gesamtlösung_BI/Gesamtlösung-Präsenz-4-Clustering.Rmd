@@ -374,6 +374,14 @@ ggplot(output, aes(x = factor(cluster), y = mean_bikes, fill = factor(cluster)))
     panel.grid.minor = element_blank()
   ) +
   coord_flip()
+
+
+library(cluster)
+library(factoextra)
+
+#create plot of number of clusters vs total within sum of squares
+
+fviz_nbclust(bike_filtered, kmeans, method = "wss")
 ```
 
 Da wir nur Wetterdaten ins Clustering miteinbezogen haben, könnten wir die Hypothese
