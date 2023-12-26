@@ -1,0 +1,8 @@
+Columns:
+- Unterschied von er_status_measured_by_ihc und er_status
+- Unterschied von her2_status_measured_by_snp6 und her2_status
+
+Ideen:
+- Dashboard wo arzt Daten hinzufügen kann und damit dann ein Modell zur Vorhersage dynamisch gemacht wird
+- Dashboard mit Überblick zu Daten
+- Dashboard mit Ganz vielen Inputs, mit der man direkt sehen kann was die Auswirkung auf das Überleben des Patienten hat

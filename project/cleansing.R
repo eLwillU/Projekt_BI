@@ -2,25 +2,26 @@ library(dplyr)
 
 raw_data <- read.csv("METABRIC_RNA_Mutation.csv", sep = ",")
 
-## missing values
+## TODO: fehlerhafte daten
 raw_data[raw_data == ""] <- NA
 raw_data[raw_data == "UNDEF"] <- NA
+raw_data$cancer_type_detailed[raw_data$cancer_type_detailed == "Breast"] <- NA
+raw_data$oncotree_code[raw_data$oncotree_code == "BREAST"] <- NA
+
+## missing values
 sum(is.na(raw_data))
 length(unique(raw_data$patient_id)) == nrow(raw_data) # there are no duplicate patients
 # per column
 missing_column <- sapply(raw_data, function(x) sum(is.na(x)) / length(x) * 100)
 missing_column <- sort(missing_column, decreasing = TRUE)
-missing_column
 # per row
 missing_row <- apply(raw_data, 1, function(x) sum(is.na(x)) / length(x) * 100)
 missing_row <- sort(missing_row, decreasing = TRUE)
-missing_row
 # removing them
 raw_data <- subset(raw_data, select = -tumor_stage) # high missing of 26%
 raw_data <- subset(raw_data, select = -cancer_type) # all values are the same
-raw_data <- na.omit(raw_data) # TODO: remove later
-
-## TODO: fehlerhafte daten?
+raw_data <- subset(raw_data, select = -patient_id) # no use for us. No duplicate patients
+raw_data <- na.omit(raw_data) # TODO: Zuerst noch besser mit fehlenden Werten umgehen
 
 ## converting
 # all character columns are factors
@@ -74,3 +75,5 @@ remove_outliers <- function(x, na.rm = TRUE) {
 raw_data <- raw_data %>% 
   mutate(across(where(is.numeric), remove_outliers))
 raw_data <- na.omit(raw_data)
+
+## TODO: Standardisierung / Normalisierung
