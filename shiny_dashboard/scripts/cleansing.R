@@ -8,15 +8,15 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
   raw_data[raw_data == "UNDEF"] <- NA
   raw_data$cancer_type_detailed[raw_data$cancer_type_detailed == "Breast"] <- NA
   raw_data$oncotree_code[raw_data$oncotree_code == "BREAST"] <- NA
-  raw_data <- raw_data %>% select(-ends_with("mut")) # remove mutation data
+  raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) # remove mutation data
   
   ## missing values
-  sum(is.na(raw_data))
+  sum(is.na(raw_data)) # there are missing values, we should handle them
   length(unique(raw_data$patient_id)) == nrow(raw_data) # there are no duplicate patients
-  # per column
+  # missing values per column
   missing_column <- sapply(raw_data, function(x) sum(is.na(x)) / length(x) * 100)
   missing_column <- sort(missing_column, decreasing = TRUE)
-  # per row
+  # missing values per row
   missing_row <- apply(raw_data, 1, function(x) sum(is.na(x)) / length(x) * 100)
   missing_row <- sort(missing_row, decreasing = TRUE)
   # removing them
@@ -32,7 +32,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
   raw_data <- na.omit(raw_data) 
   
   ## converting
-  # all character columns are factors
+  # make all character columns factors
   raw_data <- raw_data %>% 
     mutate(across(where(is.character), as.factor))
   # additional factors that were numbers
@@ -95,12 +95,12 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
 }
 
 get_raw_clinical_data <- function(balance_data = TRUE) {
-  data <- get_raw_data()
-  return(data[,1:24])
+  data <- get_raw_data(balance_data=balance_data)
+  return(data[,1:23])
 }
 
 get_raw_gene_data <- function(balance_data = TRUE) {
-  data <- get_raw_data()
+  data <- get_raw_data(balance_data=balance_data)
   return(data[,24:ncol(data)])
 }
 
