@@ -88,6 +88,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
   
   if(balance_data) {
     raw_data <- caret::upSample(raw_data, raw_data$death_from_cancer)
+    raw_data <- subset(raw_data, select = -Class) # redundant
   }
   
   return (raw_data)
