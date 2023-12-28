@@ -5,7 +5,7 @@ library(e1071)
 library(dplyr)
 
 
-raw <- get_raw_data(remove_highly_correlated = TRUE)
+raw <- get_raw_data(remove_highly_correlated = TRUE, normalize_data = TRUE)
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)

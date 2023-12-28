@@ -1,14 +1,16 @@
 get_raw_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
-    remove_highly_correlated = FALSE
+    remove_highly_correlated = FALSE,
+    normalize_data = FALSE
     ) {
   library(dplyr)
   library(caret)
   print(paste(
     "Getting Data with: remove_outliers=", remove_outliers,
     "balance_data=", balance_data, 
-    "remove_highly_correlated=", remove_highly_correlated
+    "remove_highly_correlated=", remove_highly_correlated,
+    "normalize_data=", normalize_data
     ))
   raw_data <- read.csv("data/METABRIC_RNA_Mutation.csv", sep = ",")
     
@@ -99,10 +101,12 @@ get_raw_data <- function(
     mutate(death_from_cancer = ifelse(death_from_cancer == "Died of Disease", "yes", "no"))
   raw_data$death_from_cancer <- as.factor(raw_data$death_from_cancer)
   
+  
   if(balance_data) {
     raw_data <- caret::upSample(raw_data, raw_data$death_from_cancer)
     raw_data <- subset(raw_data, select = -Class) # redundant
   }
+  
   
   if(remove_highly_correlated) {
     raw_numeric <- raw_data %>% select_if(is.numeric)
@@ -112,6 +116,16 @@ get_raw_data <- function(
     print(paste("Removed ", length(highlyCorDescr), "Columns because correlation"))
   }
   
+  
+  if(normalize_data) {
+    normalize <- function(x) {
+      (x - min(x)) / (max(x) - min(x))
+    }
+    
+    raw_data <- raw_data %>%
+      mutate_if(is.numeric, normalize)
+  }
+  
   return (raw_data)
 }
 
@@ -119,12 +133,14 @@ get_raw_data <- function(
 get_raw_clinical_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
-    remove_highly_correlated = FALSE
+    remove_highly_correlated = FALSE,
+    normalize_data = FALSE
     ) {
   data <- get_raw_data(
     remove_outliers = remove_outliers,
     balance_data=balance_data,
-    remove_highly_correlated = remove_highly_correlated
+    remove_highly_correlated = remove_highly_correlated,
+    normalize_data = normalize_data
     )
   
   last_col_index <- which(names(data) == "death_from_cancer")
@@ -135,12 +151,14 @@ get_raw_clinical_data <- function(
 get_raw_gene_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
-    remove_highly_correlated = FALSE
+    remove_highly_correlated = FALSE,
+    normalize_data = FALSE
     ) {
   data <- get_raw_data(
     remove_outliers = remove_outliers, 
     balance_data=balance_data,
-    remove_highly_correlated = remove_highly_correlated
+    remove_highly_correlated = remove_highly_correlated,
+    normalize_data = normalize_data
     )
   
   first_col_index <- which(names(data) == "brca1")
