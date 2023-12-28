@@ -1,19 +1,16 @@
 source("scripts/preprocessing.R")
-library(MASS)
 library(caret)
 library(e1071)
 library(dplyr)
-
-
-raw <- get_raw_data(remove_highly_correlated = TRUE, normalize_data = TRUE)
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
-
+df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
 
 ## automatic creation with caret train
+df <- get_raw_clinical_data(balance_data = FALSE)
 trainIndex <- createDataPartition(df$death_from_cancer, p = .8, list = FALSE, times = 1)
 trainData <- df[trainIndex, ]
 testData <- df[-trainIndex, ]
@@ -39,7 +36,6 @@ predicted_classes <- ifelse(probabilities > 0.5, "yes", "no")
 predicted_classes <- factor(predicted_classes, levels = c("no", "yes"))
 confMatrix <- confusionMatrix(predicted_classes, testData$death_from_cancer)
 print(confMatrix)
-
 
 ## manual NaiveBayes
 trainIndex <- createDataPartition(df$death_from_cancer, p = .8, list = FALSE, times = 1)

@@ -102,12 +102,14 @@ get_raw_data <- function(
   raw_data$death_from_cancer <- as.factor(raw_data$death_from_cancer)
   
   
+  ## balancing the data
   if(balance_data) {
     raw_data <- caret::upSample(raw_data, raw_data$death_from_cancer)
     raw_data <- subset(raw_data, select = -Class) # redundant
   }
   
   
+  ## select only uncorrelated features
   if(remove_highly_correlated) {
     raw_numeric <- raw_data %>% select_if(is.numeric)
     descrCor <- cor(raw_numeric)
@@ -117,6 +119,7 @@ get_raw_data <- function(
   }
   
   
+  ## normalize
   if(normalize_data) {
     normalize <- function(x) {
       (x - min(x)) / (max(x) - min(x))
@@ -161,7 +164,7 @@ get_raw_gene_data <- function(
     normalize_data = normalize_data
     )
   
-  first_col_index <- which(names(data) == "brca1")
+  first_col_index <- which(names(data) == "death_from_cancer")
   return(data[,first_col_index:ncol(data)])
 }
 
