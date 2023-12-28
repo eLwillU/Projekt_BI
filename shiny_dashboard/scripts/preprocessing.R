@@ -1,6 +1,15 @@
-get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
+get_raw_data <- function(
+    remove_outliers = FALSE, 
+    balance_data = TRUE,
+    remove_highly_correlated = FALSE
+    ) {
   library(dplyr)
   library(caret)
+  print(paste(
+    "Getting Data with: remove_outliers=", remove_outliers,
+    "balance_data=", balance_data, 
+    "remove_highly_correlated=", remove_highly_correlated
+    ))
   raw_data <- read.csv("data/METABRIC_RNA_Mutation.csv", sep = ",")
     
   ## fehlerhafte daten 
@@ -9,6 +18,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
   raw_data$cancer_type_detailed[raw_data$cancer_type_detailed == "Breast"] <- NA
   raw_data$oncotree_code[raw_data$oncotree_code == "BREAST"] <- NA
   raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) # remove mutation data
+  
   
   ## missing values
   sum(is.na(raw_data)) # there are missing values, we should handle them
@@ -30,6 +40,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
   raw_data <- subset(raw_data, select = -oncotree_code) # redundant
   # TODO: maybe replace with median primary_tumor_laterality
   raw_data <- na.omit(raw_data) 
+  
   
   ## converting
   # make all character columns factors
@@ -65,6 +76,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
     ordered = TRUE
   ) 
   
+  
   ## outlier
   if(remove_outliers) {
     #TODO: discuss how to handle outliers. If removed only 6 rows remain :D
@@ -81,6 +93,7 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
     raw_data <- na.omit(raw_data)
   }
   
+  
   ## Mutate death_from_cancer column for out usecase
   raw_data <- raw_data %>% 
     mutate(death_from_cancer = ifelse(death_from_cancer == "Died of Disease", "yes", "no"))
@@ -91,17 +104,47 @@ get_raw_data <- function(remove_outliers = FALSE, balance_data = TRUE) {
     raw_data <- subset(raw_data, select = -Class) # redundant
   }
   
+  if(remove_highly_correlated) {
+    raw_numeric <- raw_data %>% select_if(is.numeric)
+    descrCor <- cor(raw_numeric)
+    highlyCorDescr <- findCorrelation(descrCor, cutoff = .75)
+    raw_data <- raw_data[,-highlyCorDescr]
+    print(paste("Removed ", length(highlyCorDescr), "Columns because correlation"))
+  }
+  
   return (raw_data)
 }
 
-get_raw_clinical_data <- function(balance_data = TRUE) {
-  data <- get_raw_data(balance_data=balance_data)
-  return(data[,1:23])
+
+get_raw_clinical_data <- function(
+    remove_outliers = FALSE, 
+    balance_data = TRUE,
+    remove_highly_correlated = FALSE
+    ) {
+  data <- get_raw_data(
+    remove_outliers = remove_outliers,
+    balance_data=balance_data,
+    remove_highly_correlated = remove_highly_correlated
+    )
+  
+  last_col_index <- which(names(data) == "death_from_cancer")
+  return(data[,1:last_col_index])
 }
 
-get_raw_gene_data <- function(balance_data = TRUE) {
-  data <- get_raw_data(balance_data=balance_data)
-  return(data[,24:ncol(data)])
+
+get_raw_gene_data <- function(
+    remove_outliers = FALSE, 
+    balance_data = TRUE,
+    remove_highly_correlated = FALSE
+    ) {
+  data <- get_raw_data(
+    remove_outliers = remove_outliers, 
+    balance_data=balance_data,
+    remove_highly_correlated = remove_highly_correlated
+    )
+  
+  first_col_index <- which(names(data) == "brca1")
+  return(data[,first_col_index:ncol(data)])
 }
 
 
