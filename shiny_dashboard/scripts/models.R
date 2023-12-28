@@ -34,3 +34,8 @@ train_logistic_clinical_model <- function(df) {
   
   save_model("clinical_logistic.rds", confMatrix = confMatrix, model=model_stepped)
 }
+
+get_logistic_clinical_model() <- function() {
+  loaded_model <- readRDS(file = "models/clinical_logistic.rds")
+  return (loaded_model)
+}
