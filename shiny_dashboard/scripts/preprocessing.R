@@ -77,6 +77,7 @@ get_raw_data <- function(
     levels = c(1,2,3), 
     ordered = TRUE
   ) 
+
   
   
   ## outlier
