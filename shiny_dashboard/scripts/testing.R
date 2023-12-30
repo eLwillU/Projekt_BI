@@ -5,4 +5,4 @@ df <- get_raw_clinical_data()
 model <- get_logistic_clinical_model_survival()
 colnames(df)
 ?predict
-summary(df$cancer_type_detailed)
+summary(df$cellularity)

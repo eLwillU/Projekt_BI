@@ -236,6 +236,18 @@ ui <- dashboardPage(
                  column(12,
                         uiOutput("logisticModelOutput"))
                  ), 
+        # Naive Bayes
+        fluidRow(column(12,
+                        uiOutput("nbModelHeader")),
+                 column(12,
+                        uiOutput("nbModelOutput"))
+        ),
+        # Decision Tree
+        fluidRow(column(12,
+                        uiOutput("decisionTreeModelHeader")),
+                 column(12,
+                        uiOutput("decisionTreeModelOutput"))
+        ),
       )
     )
   )),
@@ -247,7 +259,7 @@ server <- function(input, output) {
   source("scripts/models.R")
   ## patient data
   new_patient <- reactive({
-    list(
+    data.frame(
       age_at_diagnosis = input$ageInput,
       type_of_breast_surgery = input$surgerytypeInput, 
       cancer_type_detailed = input$cancertypeInput, 
@@ -271,16 +283,55 @@ server <- function(input, output) {
   })
   
   ## logistic model
-  clinical_logistic <- get_logistic_clinical_model_survival()
+  clinical_logistic_model <- get_logistic_clinical_model_survival()
   output$logisticModelHeader <- renderUI({
     h2(paste("Logistic Model 
-               [Sensitivity = ", round(clinical_logistic$sensitivity, 1),
-               "Specificity = ", round(clinical_logistic$specificity, 1),
+               [Sensitivity = ", round(clinical_logistic_model$sensitivity, 1),
+               "Specificity = ", round(clinical_logistic_model$specificity, 1),
                "]"
                ))
   })
   output$logisticModelOutput <- renderUI({
-    predicted_probabilities <- predict(clinical_logistic$model, new_patient(), type = "response")
+    predicted_probabilities <- predict(clinical_logistic_model$model, new_patient(), type = "response")
+    predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")
+    h3(paste(predicted_class, "[", round(predicted_probabilities, 3)*100, "%]"))
+  })
+  
+  ## Naive Bayes
+  nb_model <- get_clinical_nb_model_survival()
+  output$nbModelHeader <- renderUI({
+    h2(paste("Naive Bayes Model 
+               [Sensitivity = ", round(nb_model$sensitivity, 1),
+             "Specificity = ", round(nb_model$specificity, 1),
+             "]"
+    ))
+  })
+  output$nbModelOutput <- renderUI({
+    predicted_probabilities <- predict(nb_model$model, new_patient(), type = "raw")
+    predicted_class <- predict(nb_model$model, new_patient(), type = "class")
+    output <- ""
+    if (predicted_class == "yes") {
+      output <- paste("Dies", "[", round(predicted_probabilities[, "yes"], 3)*100, "%]")
+    } 
+    else {
+      output <- paste("Survives", "[", round(predicted_probabilities[, "no"], 3)*100, "%]")
+    }
+    h3(output)
+  })
+  
+  ## Decision Tree
+  # TODO: I dont get this error. It does not happen with the other variables
+  tree_model <- get_clinical_dectree_model_survival()
+  output$decisionTreeModelHeader <- renderUI({
+    print(summary(new_patient()))
+    h2(paste("Decision Tree Model
+               [Sensitivity = ", round(tree_model$sensitivity, 1),
+             "Specificity = ", round(tree_model$specificity, 1),
+             "]"
+    ))
+  })
+  output$decisionTreeModelOutput <- renderUI({
+    predicted_probabilities <- predict(tree_model$model, new_patient(), type = "prob")
     predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")
     h3(paste(predicted_class, "[", round(predicted_probabilities, 3)*100, "%]"))
   })
