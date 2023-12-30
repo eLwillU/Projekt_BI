@@ -59,18 +59,16 @@ data$mutation_count_T <- log10((data$mutation_count)); data$mutation_count <- NU
 par(mfrow = c(2, 2))
 
 # Plot histogram for death_from_cancer = "yes"
-hist(data$tumor_size[data$death_from_cancer == "yes"], main = "Tumor Size (Death = Yes)", xlab = "Tumor Size", col = "red")
+hist(data$tumor_size_T[data$death_from_cancer == "yes"], main = "Tumor Size (Death = Yes)", xlab = "Tumor Size", col = "red")
 
 # Plot histogram for death_from_cancer = "no"
-hist(data$tumor_size[data$death_from_cancer == "no"], main = "Tumor Size (Death = No)", xlab = "Tumor Size", col = "blue")
+hist(data$tumor_size_T[data$death_from_cancer == "no"], main = "Tumor Size (Death = No)", xlab = "Tumor Size", col = "blue")
 
 # Plot histogram for mutation_count with death_from_cancer = "yes"
-hist(data$mutation_count[data$death_from_cancer == "yes"], main = "Mutation Count (Death = Yes)", xlab = "Mutation Count", col = "green")
+hist(data$mutation_count_T[data$death_from_cancer == "yes"], main = "Mutation Count (Death = Yes)", xlab = "Mutation Count", col = "green")
 
 # Plot histogram for mutation_count with death_from_cancer = "no"
-hist(data$mutation_count[data$death_from_cancer == "no"], main = "Mutation Count (Death = No)", xlab = "Mutation Count", col = "purple")
-
-
+hist(data$mutation_count_T[data$death_from_cancer == "no"], main = "Mutation Count (Death = No)", xlab = "Mutation Count", col = "purple")
 
 
 correlation_matrix <- cor(data[, sapply(data, is.numeric)], data$death_from_cancer)
@@ -79,22 +77,18 @@ significant_columns <- names(sort(correlation_with_target, decreasing = TRUE))
 
 library(randomForest)
 
-your_data_numeric <- model.matrix(death_from_cancer ~ ., data)
+your_data_numeric <- model.matrix(death_from_cancer ~ ., data)[,-1]
 rf_model <- randomForest(death_from_cancer ~ ., data = data)
 feature_importance <- importance(rf_model)
 significant_columns <- rownames(feature_importance)
 
 df <- data.frame(col2 = feature_importance)
-sort(df[,2], decreasing = T)
 
 df <- df %>%
   arrange(desc(MeanDecreaseGini))
 
+df
 
-feature_importance <- feature_importance %>%
-  arrange(desc(MeanDecreaseGini))
-
-sorted_matrix <- feature_importance[order(feature_importance[, 1], decreasing=TRUE), ]
 
 
 
