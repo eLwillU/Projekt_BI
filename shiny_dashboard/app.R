@@ -48,7 +48,6 @@ ui <- dashboardPage(
               selected = "Basal"
             )
           ),
-          
           # HER Status
           column(
             4,
@@ -60,7 +59,6 @@ ui <- dashboardPage(
               selected = "Negative"
             )
           ),
-          
           # Hormone Therapy
           column(
             4,
@@ -72,7 +70,6 @@ ui <- dashboardPage(
               selected = "yes"
             )
           ),
-          
           # Lymphnodes
           column(4,
                  numericInput(
@@ -80,7 +77,6 @@ ui <- dashboardPage(
                    h3("Lymphnodes"),
                    value = 0
                  )),
-          
           # Nottingham Prognostic Index
           column(4,
                  numericInput(
@@ -88,7 +84,6 @@ ui <- dashboardPage(
                    h3("Nottingham Index"),
                    value = 0
                  )),
-          
           # Tumor Size
           column(
             4,
