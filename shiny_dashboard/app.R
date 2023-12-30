@@ -19,7 +19,7 @@ ui <- dashboardPage(
           # Age at diagnosis
           column(4,
                  numericInput("ageInput",
-                              h3("Lymphnodes"),
+                              h3("Patient Age"),
                               value = 65)),
           # Type of surgery
           column(
@@ -30,6 +30,19 @@ ui <- dashboardPage(
               choices = list("BREAST CONSERVING" = "BREAST CONSERVING",
                              "MASTECTOMY" = "MASTECTOMY"),
               selected = "MASTECTOMY"
+            )
+          ),
+          # Cancer Type
+          column(
+            4,
+            selectInput(
+              "cancertypeInput",
+              h3("Cancer Type"),
+              choices = list("Breast Invasive Ductal Carcinoma" = "Breast Invasive Ductal Carcinoma",
+                             "Breast Invasive Lobular Carcinoma" = "Breast Invasive Lobular Carcinoma",
+                             "Breast Invasive Mixed Mucinous Carcinoma" = "Breast Invasive Mixed Mucinous Carcinoma",
+                             "Breast Mixed Ductal and Lobular Carcinoma" = "Breast Mixed Ductal and Lobular Carcinoma"),
+              selected = "Breast Invasive Ductal Carcinoma"
             )
           ),
           # cellularity
@@ -232,7 +245,32 @@ ui <- dashboardPage(
 server <- function(input, output) {
   # clinical prognosis
   source("scripts/models.R")
-  # logistic model
+  ## patient data
+  new_patient <- reactive({
+    list(
+      age_at_diagnosis = input$ageInput,
+      type_of_breast_surgery = input$surgerytypeInput, 
+      cancer_type_detailed = input$cancertypeInput, 
+      cellularity = input$cellularityInput,
+      chemotherapy = input$chemotherapyInput, 
+      pam50_._claudin.low_subtype = input$pam50Input,
+      er_status = input$erInput, 
+      neoplasm_histologic_grade = input$neoplasmInput, 
+      her2_status = input$her2Input,
+      tumor_other_histologic_subtype = input$histologicsubtypeInput,
+      hormone_therapy = input$hormoneInput,
+      inferred_menopausal_state = input$menopausalstateInput,
+      primary_tumor_laterality = input$lateralityInput, 
+      lymph_nodes_examined_positive = input$lymphnodesInput,
+      mutation_count = input$mutationcountInput,
+      nottingham_prognostic_index = input$nottinghamInput,
+      pr_status = input$prstatusInput, 
+      radio_therapy = input$radiotherapyInput, 
+      tumor_size = input$tumorsizeInput
+    )
+  })
+  
+  ## logistic model
   clinical_logistic <- get_logistic_clinical_model_survival()
   output$logisticModelHeader <- renderUI({
     h2(paste("Logistic Model 
@@ -242,16 +280,7 @@ server <- function(input, output) {
                ))
   })
   output$logisticModelOutput <- renderUI({
-    new_patient <- data.frame(
-      cellularity = input$cellularityInput,  
-      pam50_._claudin.low_subtype = input$pam50Input,
-      her2_status = input$her2Input, 
-      hormone_therapy = input$hormoneInput,
-      lymph_nodes_examined_positive = input$lymphnodesInput,  
-      nottingham_prognostic_index = input$nottinghamInput,  
-      tumor_size = input$tumorsizeInput  
-    )
-    predicted_probabilities <- predict(clinical_logistic$model, new_patient, type = "response")
+    predicted_probabilities <- predict(clinical_logistic$model, new_patient(), type = "response")
     predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")
     h3(paste(predicted_class, "[", round(predicted_probabilities, 3)*100, "%]"))
   })

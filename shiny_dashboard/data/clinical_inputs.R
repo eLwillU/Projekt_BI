@@ -2,7 +2,7 @@ fluidRow(
   # Age at diagnosis
   column(4,
          numericInput("ageInput",
-                      h3("Lymphnodes"),
+                      h3("Patient Age"),
                       value = 65)),
   # Type of surgery
   column(
@@ -194,4 +194,4 @@ fluidRow(
            max = 200,
            value = 50
          )),
-),
+), 
