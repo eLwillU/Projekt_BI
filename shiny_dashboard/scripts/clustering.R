@@ -71,9 +71,6 @@ hist(data$mutation_count_T[data$death_from_cancer == "yes"], main = "Mutation Co
 hist(data$mutation_count_T[data$death_from_cancer == "no"], main = "Mutation Count (Death = No)", xlab = "Mutation Count", col = "purple")
 
 
-correlation_matrix <- cor(data[, sapply(data, is.numeric)], data$death_from_cancer)
-correlation_with_target <- correlation_matrix[, "death_from_cancer"]
-significant_columns <- names(sort(correlation_with_target, decreasing = TRUE))
 
 library(randomForest)
 
@@ -90,5 +87,35 @@ df <- df %>%
 df
 
 
+data2 <- get_raw_data()
+
+sum(data2$mutation_count)
+
+hist(data$age_at_diagnosis)
 
 
+cohortPlotData <- data %>%
+  mutate(cohort = as.numeric(as.character(cohort))) %>%
+  group_by(cohort) %>%
+  summarize(count = n())
+
+ggplot(cohortPlotData, aes(x = "", y = count, fill = factor(cohort))) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  geom_text(aes(label = cohort),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "Cohort"))
+
+
+
+hormonePlotData <- data %>%
+  mutate(hormone_therapy = data$hormone_therapy) %>%
+  group_by(hormone_therapy) %>%
+  summarize(count = n())
+
+ggplot(hormonePlotData, aes(x = "", y = count, fill = factor(hormone_therapy))) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  geom_text(aes(label = hormone_therapy),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "Hormone Therapy"))
