@@ -47,30 +47,54 @@ ggplot(data = data, aes(sample=tumor_size)) +
   facet_grid(. ~death_from_cancer, labeller=labeller(death_from_cancer=QQlabels))
 
 
-QQlabels = c("0" = "overall_survival=0","1" = "overall_survival=1")
-ggplot(data = data, aes(sample=tumor_size)) + 
-  stat_qq() + 
-  stat_qqline() + 
-  facet_grid(.~overall_survival,labeller=labeller(overall_survival=QQlabels))
+hist(data$tumor_size)
+
 
 # The logarithm transformation
+data_n <- select_if(data, is.numeric) 
 data$tumor_size_T <- log10((data$tumor_size)); data$tumor_size <- NULL
 data$mutation_count_T <- log10((data$mutation_count)); data$mutation_count <- NULL
 
-# plot  data
-par(mfrow=c(2 ,2))
-hist(data_n$tumor_size , main = "", xlab = "Tumor size", freq = FALSE )
-curve(dnorm(x, mean = mean(data_n$tumor_size), sd = sd(data_n$tumor_size)),col = "red", add = TRUE)
-#boxplot(data_n$tumor_size, xlab = "Tumor size")
+# Set up the plotting layout
+par(mfrow = c(2, 2))
 
-hist(data$tumor_size_T , main = "", xlab = "Tumor size ", freq = FALSE )
-curve(dnorm(x, mean = mean(data$tumor_size_T), sd = sd(data$tumor_size_T)),col = "red", add = TRUE)
-#boxplot(data$tumor_size_T, xlab = "Tumor size ")
+# Plot histogram for death_from_cancer = "yes"
+hist(data$tumor_size[data$death_from_cancer == "yes"], main = "Tumor Size (Death = Yes)", xlab = "Tumor Size", col = "red")
 
-hist(data_n$mutation_count, main = "", xlab = "Mutation count", freq = FALSE )
-curve(dnorm(x, mean = mean(data_n$mutation_count), sd = sd(data_n$mutation_count)),col = "red", add = TRUE)
-#boxplot(data$mutation_count, xlab = "Mutation count")
+# Plot histogram for death_from_cancer = "no"
+hist(data$tumor_size[data$death_from_cancer == "no"], main = "Tumor Size (Death = No)", xlab = "Tumor Size", col = "blue")
 
-hist(data$mutation_count_T, main = "", xlab = "Mutation count", freq = FALSE )
-curve(dnorm(x, mean = mean(data$mutation_count_T), sd = sd(data$mutation_count_T)),col = "red", add = TRUE)
-#boxplot(data$mutation_count_T, xlab = "Mutation count ")
+# Plot histogram for mutation_count with death_from_cancer = "yes"
+hist(data$mutation_count[data$death_from_cancer == "yes"], main = "Mutation Count (Death = Yes)", xlab = "Mutation Count", col = "green")
+
+# Plot histogram for mutation_count with death_from_cancer = "no"
+hist(data$mutation_count[data$death_from_cancer == "no"], main = "Mutation Count (Death = No)", xlab = "Mutation Count", col = "purple")
+
+
+
+
+correlation_matrix <- cor(data[, sapply(data, is.numeric)], data$death_from_cancer)
+correlation_with_target <- correlation_matrix[, "death_from_cancer"]
+significant_columns <- names(sort(correlation_with_target, decreasing = TRUE))
+
+library(randomForest)
+
+your_data_numeric <- model.matrix(death_from_cancer ~ ., data)
+rf_model <- randomForest(death_from_cancer ~ ., data = data)
+feature_importance <- importance(rf_model)
+significant_columns <- rownames(feature_importance)
+
+df <- data.frame(col2 = feature_importance)
+sort(df[,2], decreasing = T)
+
+df <- df %>%
+  arrange(desc(MeanDecreaseGini))
+
+
+feature_importance <- feature_importance %>%
+  arrange(desc(MeanDecreaseGini))
+
+sorted_matrix <- feature_importance[order(feature_importance[, 1], decreasing=TRUE), ]
+
+
+
