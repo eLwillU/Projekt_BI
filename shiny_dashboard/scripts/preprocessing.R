@@ -3,7 +3,7 @@ get_raw_data <- function(
     balance_data = TRUE,
     remove_highly_correlated = FALSE,
     normalize_data = FALSE,
-    remove_mutations = TRUE,
+    remove_mutations = TRUE
     ) {
   library(dplyr)
   library(caret)

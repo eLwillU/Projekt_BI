@@ -2,7 +2,6 @@ save_model <- function(name, confMatrix, model) {
   model_list <- list(
     sensitivity = confMatrix$byClass["Sensitivity"],
     specificity = confMatrix$byClass["Specificity"],
-    sensitivity = confMatrix$byClass["Sensitivity"],
     balanced_accuracy = confMatrix$byClass["Balanced Accuracy"],
     kappa = confMatrix$byClass["kappa"],
     model = model
@@ -35,7 +34,7 @@ train_logistic_clinical_model <- function(df) {
   save_model("clinical_logistic.rds", confMatrix = confMatrix, model=model_stepped)
 }
 
-get_logistic_clinical_model() <- function() {
+get_logistic_clinical_model <- function() {
   loaded_model <- readRDS(file = "models/clinical_logistic.rds")
   return (loaded_model)
 }
