@@ -2,7 +2,8 @@ get_raw_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
     remove_highly_correlated = FALSE,
-    normalize_data = FALSE
+    normalize_data = FALSE,
+    remove_mutations = TRUE,
     ) {
   library(dplyr)
   library(caret)
@@ -10,7 +11,8 @@ get_raw_data <- function(
     "Getting Data with: remove_outliers=", remove_outliers,
     "balance_data=", balance_data, 
     "remove_highly_correlated=", remove_highly_correlated,
-    "normalize_data=", normalize_data
+    "normalize_data=", normalize_data,
+    "remove_mutations=", remove_mutations
     ))
   raw_data <- read.csv("data/METABRIC_RNA_Mutation.csv", sep = ",")
     
@@ -19,8 +21,7 @@ get_raw_data <- function(
   raw_data[raw_data == "UNDEF"] <- NA
   raw_data$cancer_type_detailed[raw_data$cancer_type_detailed == "Breast"] <- NA
   raw_data$oncotree_code[raw_data$oncotree_code == "BREAST"] <- NA
-  raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) # remove mutation data
-  
+ 
   
   ## missing values
   sum(is.na(raw_data)) # there are missing values, we should handle them
@@ -117,6 +118,10 @@ get_raw_data <- function(
     highlyCorDescr <- findCorrelation(descrCor, cutoff = .75)
     raw_data <- raw_data[,-highlyCorDescr]
     print(paste("Removed ", length(highlyCorDescr), "Columns because correlation"))
+  }
+  
+  if(remove_mutations){
+    raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) 
   }
   
   
