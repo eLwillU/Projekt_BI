@@ -88,7 +88,7 @@ server <- function(input, output) {
   # clinical prognosis
   source("scripts/models.R")
   # logistic model
-  clinical_logistic <- get_logistic_clinical_model()
+  clinical_logistic <- get_logistic_clinical_model_survival()
   output$logisticModelHeader <- renderUI({
     h2(paste("Logistic Model 
                [Sensitivity = ", round(clinical_logistic$sensitivity, 1),
