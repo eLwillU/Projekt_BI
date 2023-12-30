@@ -143,7 +143,8 @@ get_raw_clinical_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
     remove_highly_correlated = FALSE,
-    normalize_data = FALSE
+    normalize_data = FALSE,
+    remove_mutations = TRUE
     ) {
   data <- get_raw_data(
     remove_outliers = remove_outliers,
@@ -161,7 +162,8 @@ get_raw_gene_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
     remove_highly_correlated = FALSE,
-    normalize_data = FALSE
+    normalize_data = FALSE,
+    remove_mutations = TRUE
     ) {
   data <- get_raw_data(
     remove_outliers = remove_outliers, 
