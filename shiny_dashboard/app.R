@@ -17,56 +17,90 @@ ui <- dashboardPage(
         h1("Patient information"),
         fluidRow(
           # cellularity
-          column(4,
-                 selectInput("selectCellularity", h3("Cellularity"), 
-                             choices = list("Low" = "Low", 
-                                            "Moderate" = "Moderate", 
-                                            "High" = "High"), 
-                             selected = "Moderate")),
+          column(
+            4,
+            selectInput(
+              "selectCellularity",
+              h3("Cellularity"),
+              choices = list(
+                "Low" = "Low",
+                "Moderate" = "Moderate",
+                "High" = "High"
+              ),
+              selected = "Moderate"
+            )
+          ),
           # pam50
-          column(4,
-                 selectInput("selectPAM50", h3("PAM50 Test"), 
-                             choices = list("Basal" = "Basal", 
-                                            "claudin-low" = "claudin-low", 
-                                            "Her2" = "Her2", 
-                                            "LumA" = "LumA", 
-                                            "LumB" = "LumB", 
-                                            "NC" = "NC", 
-                                            "Normal" = "Normal"), 
-                             selected = "Basal")),
+          column(
+            4,
+            selectInput(
+              "selectPAM50",
+              h3("PAM50 Test"),
+              choices = list(
+                "Basal" = "Basal",
+                "claudin-low" = "claudin-low",
+                "Her2" = "Her2",
+                "LumA" = "LumA",
+                "LumB" = "LumB",
+                "NC" = "NC",
+                "Normal" = "Normal"
+              ),
+              selected = "Basal"
+            )
+          ),
           
           # HER Status
-          column(4,
-                 selectInput("selectHER2", h3("HER2"), 
-                             choices = list("Negative" = "Negative", 
-                                            "Positive" = "Positive"), 
-                             selected = "Negative")),
+          column(
+            4,
+            selectInput(
+              "selectHER2",
+              h3("HER2"),
+              choices = list("Negative" = "Negative",
+                             "Positive" = "Positive"),
+              selected = "Negative"
+            )
+          ),
           
           # Hormone Therapy
-          column(4,
-                 selectInput("selectHormone", h3("Hormone Therapy"), 
-                             choices = list("no" = "no", 
-                                            "yes" = "yes"), 
-                             selected = "yes")),
+          column(
+            4,
+            selectInput(
+              "selectHormone",
+              h3("Hormone Therapy"),
+              choices = list("no" = "no",
+                             "yes" = "yes"),
+              selected = "yes"
+            )
+          ),
           
           # Lymphnodes
-          column(4, 
-                 numericInput("lymphnodesNumber", 
-                              h3("Lymphnodes"), 
-                              value = 0)),
+          column(4,
+                 numericInput(
+                   "lymphnodesNumber",
+                   h3("Lymphnodes"),
+                   value = 0
+                 )),
           
           # Nottingham Prognostic Index
-          column(4, 
-                 numericInput("nottinghamNumber", 
-                              h3("Nottingham Index"), 
-                              value = 0)),
+          column(4,
+                 numericInput(
+                   "nottinghamNumber",
+                   h3("Nottingham Index"),
+                   value = 0
+                 )),
           
           # Tumor Size
-          column(4, 
-                 sliderInput("tumorsizeSlider", h3("Tumor Size"),
-                             min = 0, max = 200, value = 50)
+          column(
+            4,
+            sliderInput(
+              "tumorsizeSlider",
+              h3("Tumor Size"),
+              min = 0,
+              max = 200,
+              value = 50
+            )
           ),
-          ),
+        ), 
         
         
         ## Display model predictions

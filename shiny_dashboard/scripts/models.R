@@ -41,7 +41,7 @@ get_logistic_clinical_model_survival <- function() {
 }
 
 ## Naive Bayes Models
-train_clinical_nb_model <- function(df) {
+train_clinical_nb_model_survival <- function(df) {
   library(caret)
   library(e1071)
   df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
@@ -60,10 +60,35 @@ train_clinical_nb_model <- function(df) {
   confMatrix <- confusionMatrix(predictions, testData$death_from_cancer)
   print(confMatrix)
   
-  save_model("clinical_nb.rds", confMatrix = confMatrix, model=model)
+  save_model("clinical_nb_survival.rds", confMatrix = confMatrix, model=model)
 }
 
-get_clinical_nb_model <- function() {
-  loaded_model <- readRDS(file = "models/clinical_nb.rds")
+get_clinical_nb_model_survival <- function() {
+  loaded_model <- readRDS(file = "models/clinical_nb_survival.rds")
+  return (loaded_model)
+}
+
+## Trees
+train_clinical_dectree_model_survival <- function(df, cp=0.001) {
+  library(rpart)
+  df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
+  df <- subset(df, select = -cohort) # not useful
+  df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
+  
+  ## split data
+  trainIndex <- createDataPartition(df$death_from_cancer, p = .8, list = FALSE, times = 1)
+  trainData <- df[trainIndex, ]
+  testData <- df[-trainIndex, ]
+  
+  model <- rpart(death_from_cancer~., method="class", data=trainData, cp=cp)
+  predictions <- predict(model, testData, type = "class")
+  confMatrix <- confusionMatrix(predictions, testData$death_from_cancer)
+  print(confMatrix)
+  
+  save_model("clinical_dectree_survival.rds", confMatrix = confMatrix, model=model)
+}
+
+get_clinical_dectree_model_survival <- function() {
+  loaded_model <- readRDS(file = "models/clinical_dectree_survival.rds")
   return (loaded_model)
 }
