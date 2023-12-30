@@ -16,11 +16,27 @@ ui <- dashboardPage(
         ## Patient Data inputs
         h1("Patient information"),
         fluidRow(
+          # Age at diagnosis
+          column(4,
+                 numericInput("ageInput",
+                              h3("Lymphnodes"),
+                              value = 65)),
+          # Type of surgery
+          column(
+            4,
+            selectInput(
+              "surgerytypeInput",
+              h3("Type of surgery"),
+              choices = list("BREAST CONSERVING" = "BREAST CONSERVING",
+                             "MASTECTOMY" = "MASTECTOMY"),
+              selected = "MASTECTOMY"
+            )
+          ),
           # cellularity
           column(
             4,
             selectInput(
-              "selectCellularity",
+              "cellularityInput",
               h3("Cellularity"),
               choices = list(
                 "Low" = "Low",
@@ -30,11 +46,22 @@ ui <- dashboardPage(
               selected = "Moderate"
             )
           ),
+          # chemotherapy
+          column(
+            4,
+            selectInput(
+              "chemotherapyInput",
+              h3("Chemotherapy"),
+              choices = list("yes" = "yes",
+                             "no" = "no"),
+              selected = "yes"
+            )
+          ),
           # pam50
           column(
             4,
             selectInput(
-              "selectPAM50",
+              "pam50Input",
               h3("PAM50 Test"),
               choices = list(
                 "Basal" = "Basal",
@@ -48,53 +75,142 @@ ui <- dashboardPage(
               selected = "Basal"
             )
           ),
-          # HER Status
+          # ER Status
           column(
             4,
             selectInput(
-              "selectHER2",
+              "erInput",
+              h3("ER Status"),
+              choices = list("Negative" = "Negative",
+                             "Positive" = "Positive"),
+              selected = "Negative"
+            )
+          ),
+          # Neoplasm Histologic Grade
+          column(
+            4,
+            selectInput(
+              "neoplasmInput",
+              h3("Neoplasm Histologic Grade"),
+              choices = list("1" = 1,
+                             "2" = 2,
+                             "3" = 3),
+              selected = 2
+            )
+          ),
+          # HER2 Status
+          column(
+            4,
+            selectInput(
+              "her2Input",
               h3("HER2"),
               choices = list("Negative" = "Negative",
                              "Positive" = "Positive"),
               selected = "Negative"
             )
           ),
+          # Histologic Subtype
+          column(
+            4,
+            selectInput(
+              "histologicsubtypeInput",
+              h3("Histologic Subtype"),
+              choices = list(
+                "Ductal/NST" = "Ductal/NST",
+                "Lobular" = "Lobular",
+                "Medullary" = "Medullary",
+                "Mixed" = "Mixed",
+                "Mucinous" = "Mucinous",
+                "Tubular/ cribriform" = "Tubular/ cribriform"
+              ),
+              selected = "Mixed"
+            )
+          ),
           # Hormone Therapy
           column(
             4,
             selectInput(
-              "selectHormone",
+              "hormoneInput",
               h3("Hormone Therapy"),
               choices = list("no" = "no",
                              "yes" = "yes"),
               selected = "yes"
             )
           ),
+          # Inferred Menopausal State
+          column(
+            4,
+            selectInput(
+              "menopausalstateInput",
+              h3("Inferred Menopausal State"),
+              choices = list("Pre" = "Pre",
+                             "Post" = "Post"),
+              selected = "Post"
+            )
+          ),
+          # Primary Tumor Laterality
+          column(
+            4,
+            selectInput(
+              "lateralityInput",
+              h3("Primary Tumor Laterality"),
+              choices = list("Left" = "Left",
+                             "Right" = "Right"),
+              selected = "Left"
+            )
+          ),
           # Lymphnodes
           column(4,
                  numericInput(
-                   "lymphnodesNumber",
+                   "lymphnodesInput",
                    h3("Lymphnodes"),
+                   value = 0
+                 )),
+          # Mutation Count
+          column(4,
+                 numericInput(
+                   "mutationcountInput",
+                   h3("Mutation Count"),
                    value = 0
                  )),
           # Nottingham Prognostic Index
           column(4,
                  numericInput(
-                   "nottinghamNumber",
+                   "nottinghamInput",
                    h3("Nottingham Index"),
                    value = 0
                  )),
-          # Tumor Size
+          # PR Status
           column(
             4,
-            sliderInput(
-              "tumorsizeSlider",
-              h3("Tumor Size"),
-              min = 0,
-              max = 200,
-              value = 50
+            selectInput(
+              "prstatusInput",
+              h3("PR Status"),
+              choices = list("Positive" = "Positive",
+                             "Negative" = "Negative"),
+              selected = "Positive"
             )
           ),
+          # Radio Therapy
+          column(
+            4,
+            selectInput(
+              "radiotherapyInput",
+              h3("Radio Therapy"),
+              choices = list("no" = "no",
+                             "yes" = "yes"),
+              selected = "yes"
+            )
+          ),
+          # Tumor Size
+          column(4,
+                 sliderInput(
+                   "tumorsizeInput",
+                   h3("Tumor Size"),
+                   min = 0,
+                   max = 200,
+                   value = 50
+                 )),
         ), 
         
         
@@ -127,13 +243,13 @@ server <- function(input, output) {
   })
   output$logisticModelOutput <- renderUI({
     new_patient <- data.frame(
-      cellularity = input$selectCellularity,  
-      pam50_._claudin.low_subtype = input$selectPAM50,
-      her2_status = input$selectHER2, 
-      hormone_therapy = input$selectHormone,
-      lymph_nodes_examined_positive = input$lymphnodesNumber,  
-      nottingham_prognostic_index = input$nottinghamNumber,  
-      tumor_size = input$tumorsizeSlider  
+      cellularity = input$cellularityInput,  
+      pam50_._claudin.low_subtype = input$pam50Input,
+      her2_status = input$her2Input, 
+      hormone_therapy = input$hormoneInput,
+      lymph_nodes_examined_positive = input$lymphnodesInput,  
+      nottingham_prognostic_index = input$nottinghamInput,  
+      tumor_size = input$tumorsizeInput  
     )
     predicted_probabilities <- predict(clinical_logistic$model, new_patient, type = "response")
     predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")

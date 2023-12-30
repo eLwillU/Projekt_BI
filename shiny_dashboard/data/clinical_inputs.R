@@ -1,13 +1,9 @@
 fluidRow(
   # Age at diagnosis
   column(4,
-         sliderInput(
-           "ageInput",
-           h3("Age at diagnosis"),
-           min = 0,
-           max = 120,
-           value = 50
-         )),
+         numericInput("ageInput",
+                      h3("Lymphnodes"),
+                      value = 65)),
   # Type of surgery
   column(
     4,
@@ -15,7 +11,7 @@ fluidRow(
       "surgerytypeInput",
       h3("Type of surgery"),
       choices = list("BREAST CONSERVING" = "BREAST CONSERVING",
-                     "MASTECTOMY" = "MASTECTOMY",),
+                     "MASTECTOMY" = "MASTECTOMY"),
       selected = "MASTECTOMY"
     )
   ),
@@ -40,7 +36,7 @@ fluidRow(
       "chemotherapyInput",
       h3("Chemotherapy"),
       choices = list("yes" = "yes",
-                     "no" = "no",),
+                     "no" = "no"),
       selected = "yes"
     )
   ),
@@ -108,7 +104,7 @@ fluidRow(
         "Medullary" = "Medullary",
         "Mixed" = "Mixed",
         "Mucinous" = "Mucinous",
-        "Tubular/ cribriform" = "Tubular/ cribriform",
+        "Tubular/ cribriform" = "Tubular/ cribriform"
       ),
       selected = "Mixed"
     )
@@ -198,4 +194,4 @@ fluidRow(
            max = 200,
            value = 50
          )),
-), 
+),
