@@ -64,6 +64,7 @@ train_clinical_nb_model_survival <- function(df) {
 }
 
 get_clinical_nb_model_survival <- function() {
+  library(e1071)
   loaded_model <- readRDS(file = "models/clinical_nb_survival.rds")
   return (loaded_model)
 }
@@ -74,6 +75,9 @@ train_clinical_dectree_model_survival <- function(df, cp=0.001) {
   df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
   df <- subset(df, select = -cohort) # not useful
   df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
+  
+  df <- subset(df, select = -cellularity) # removed because of bug I cant explain
+  df <- subset(df, select = -neoplasm_histologic_grade) # removed because of bug I cant explain
   
   ## split data
   trainIndex <- createDataPartition(df$death_from_cancer, p = .8, list = FALSE, times = 1)
@@ -89,6 +93,7 @@ train_clinical_dectree_model_survival <- function(df, cp=0.001) {
 }
 
 get_clinical_dectree_model_survival <- function() {
+  library(rpart)
   loaded_model <- readRDS(file = "models/clinical_dectree_survival.rds")
   return (loaded_model)
 }

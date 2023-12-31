@@ -282,6 +282,7 @@ server <- function(input, output) {
     )
   })
   
+  
   ## logistic model
   clinical_logistic_model <- get_logistic_clinical_model_survival()
   output$logisticModelHeader <- renderUI({
@@ -296,6 +297,7 @@ server <- function(input, output) {
     predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")
     h3(paste(predicted_class, "[", round(predicted_probabilities, 3)*100, "%]"))
   })
+  
   
   ## Naive Bayes
   nb_model <- get_clinical_nb_model_survival()
@@ -319,11 +321,10 @@ server <- function(input, output) {
     h3(output)
   })
   
+  
   ## Decision Tree
-  # TODO: I dont get this error. It does not happen with the other variables
   tree_model <- get_clinical_dectree_model_survival()
   output$decisionTreeModelHeader <- renderUI({
-    print(summary(new_patient()))
     h2(paste("Decision Tree Model
                [Sensitivity = ", round(tree_model$sensitivity, 1),
              "Specificity = ", round(tree_model$specificity, 1),
@@ -332,8 +333,15 @@ server <- function(input, output) {
   })
   output$decisionTreeModelOutput <- renderUI({
     predicted_probabilities <- predict(tree_model$model, new_patient(), type = "prob")
-    predicted_class <- ifelse(predicted_probabilities > 0.5, "Dies", "Survives")
-    h3(paste(predicted_class, "[", round(predicted_probabilities, 3)*100, "%]"))
+    predicted_class <- predict(tree_model$model, new_patient(), type = "class")
+    output <- ""
+    if (predicted_class == "yes") {
+      output <- paste("Dies", "[", round(predicted_probabilities[, "yes"], 3)*100, "%]")
+    } 
+    else {
+      output <- paste("Survives", "[", round(predicted_probabilities[, "no"], 3)*100, "%]")
+    }
+    h3(output)
   })
 }
 
