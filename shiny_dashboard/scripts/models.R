@@ -43,6 +43,7 @@ get_logistic_clinical_model_survival <- function() {
 
 ## Naive Bayes Models
 train_clinical_nb_model_survival <- function(df) {
+  # TODO: feature selection?
   library(caret)
   library(e1071)
   df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
@@ -72,6 +73,8 @@ get_clinical_nb_model_survival <- function() {
 
 ## Trees
 train_clinical_dectree_model_survival <- function(df, cp=0.001) {
+  # TODO: feature selection?
+  # probably not https://topepo.github.io/caret/feature-selection-overview.html
   library(rpart)
   library(caret)
   df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
@@ -102,6 +105,8 @@ train_clinical_dectree_model_survival <- function(df, cp=0.001) {
 }
 
 get_clinical_dectree_model_survival <- function() {
+  # TODO: feature selection?
+  # probably not https://topepo.github.io/caret/feature-selection-overview.html
   library(rpart)
   loaded_model <- readRDS(file = "models/clinical_dectree_survival.rds")
   return (loaded_model)
