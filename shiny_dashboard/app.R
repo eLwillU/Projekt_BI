@@ -248,6 +248,13 @@ ui <- dashboardPage(
                  column(12,
                         uiOutput("decisionTreeModelOutput"))
         ),
+        
+        # Decision Tree
+        fluidRow(column(12,
+                        uiOutput("rfModelHeader")),
+                 column(12,
+                        uiOutput("rfModelOutput"))
+        ),
       )
     )
   )),
@@ -334,6 +341,28 @@ server <- function(input, output) {
   output$decisionTreeModelOutput <- renderUI({
     predicted_probabilities <- predict(tree_model$model, new_patient(), type = "prob")
     predicted_class <- predict(tree_model$model, new_patient(), type = "class")
+    output <- ""
+    if (predicted_class == "yes") {
+      output <- paste("Dies", "[", round(predicted_probabilities[, "yes"], 3)*100, "%]")
+    } 
+    else {
+      output <- paste("Survives", "[", round(predicted_probabilities[, "no"], 3)*100, "%]")
+    }
+    h3(output)
+  })
+  
+  ## Random Forest
+  rf_model <- get_clinical_rftree_model_survival()
+  output$rfModelHeader <- renderUI({
+    h2(paste("Random Forest Model
+               [Sensitivity = ", round(rf_model$sensitivity, 1),
+             "Specificity = ", round(rf_model$specificity, 1),
+             "]"
+    ))
+  })
+  output$rfModelOutput <- renderUI({
+    predicted_probabilities <- predict(rf_model$model, new_patient(), type = "prob")
+    predicted_class <- predict(rf_model$model, new_patient(), type = "raw")
     output <- ""
     if (predicted_class == "yes") {
       output <- paste("Dies", "[", round(predicted_probabilities[, "yes"], 3)*100, "%]")
