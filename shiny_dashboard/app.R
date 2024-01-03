@@ -12,7 +12,7 @@ ui <- dashboardPage(
   dashboardBody(tabItems(
     ### clinical prognosis
     tabItem(tabName = "prognosis_clinical",
-      
+            
       get_clinical_prognosis_ui()
     )
   )),
