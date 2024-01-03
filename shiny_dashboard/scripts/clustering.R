@@ -36,11 +36,11 @@ ggplot(data = data, aes(sample=mutation_count)) +
 
 
 data %>%
-  ggplot(aes(x = overall_survival, y = tumor_size)) +
+  ggplot(aes(x = death_from_cancer, y = tumor_size)) +
   geom_boxplot() +
   labs(x = "Survival", y = "Tumor size")
 
-QQlabels = c("no" = "overall_survival=no","yes" = "overall_survival=yes")
+QQlabels = c("no" = "death_from_cancer=no","yes" = "death_from_cancer=yes")
 ggplot(data = data, aes(sample=tumor_size)) +
   geom_qq() +
   geom_qq_line() +
@@ -119,3 +119,4 @@ ggplot(hormonePlotData, aes(x = "", y = count, fill = factor(hormone_therapy))) 
             position = position_stack(vjust = 0.5)) +
   coord_polar(theta = "y") +
   guides(fill = guide_legend(title = "Hormone Therapy"))
+
