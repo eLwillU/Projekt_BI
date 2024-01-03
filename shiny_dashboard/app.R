@@ -1,33 +1,6 @@
 library(shiny)
 library(shinydashboard)
 
-ui <- dashboardPage(
-  dashboardHeader(title = "Breast-Cancer Dashboard"),
-  
-  dashboardSidebar(sidebarMenu(
-    menuItem("Overview", tabName = "overview", icon = icon("house")),
-    menuItem("Clinical Prognosis",tabName = "prognosis_clinical",icon = icon("person-dress"))
-  )),
-  
-  dashboardBody(tabItems(
-    ### clinical prognosis
-    tabItem(tabName = "prognosis_clinical",
-            
-      get_clinical_prognosis_ui()
-    )
-  )),
-)
-
-
-server <- function(input, output) {
-  get_clinical_prognosis_server(input, output)
-}
-
-
-shinyApp(ui, server)
-
-
-
 # Create UI outside for better code readability
 get_clinical_prognosis_ui <- function(){
   return(fluidPage(
@@ -391,6 +364,31 @@ get_clinical_prognosis_server <- function(input, output){
   
   return(output)
 }
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Breast-Cancer Dashboard"),
+  
+  dashboardSidebar(sidebarMenu(
+    menuItem("Overview", tabName = "overview", icon = icon("house")),
+    menuItem("Clinical Prognosis",tabName = "prognosis_clinical",icon = icon("person-dress"))
+  )),
+  
+  dashboardBody(tabItems(
+    ### clinical prognosis
+    tabItem(tabName = "prognosis_clinical",
+            
+      get_clinical_prognosis_ui()
+    )
+  )),
+)
+
+
+server <- function(input, output) {
+  get_clinical_prognosis_server(input, output)
+}
+
+
+shinyApp(ui, server)
 
   
 
