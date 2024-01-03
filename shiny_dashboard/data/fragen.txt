@@ -11,6 +11,11 @@ Ideen:
 - Dashboard mit Ganz vielen Inputs, mit der man direkt sehen kann was die Auswirkung auf das Überleben des Patienten hat
 
 TODO:
+- Kodierung ?!?
 - Dashboard um Daten kennenzulernen
-- Dashboard mit klinischen Daten
-- Dashboard mit Gendaten
+ - Clustering
+ - Vergleiche von Krebstypen
+ - PCA
+- Dashboard für Prognose mit klinischen Daten
+ - Feature Selection
+ - LASSO
