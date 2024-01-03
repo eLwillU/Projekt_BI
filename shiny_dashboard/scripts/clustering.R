@@ -138,3 +138,29 @@ ggplot(hormonePlotData, aes(x = "", y = count, fill = factor(hormone_therapy))) 
   coord_polar(theta = "y") +
   guides(fill = guide_legend(title = "Hormone Therapy"))
 
+
+install.packages("gplots")
+
+library("gplots")
+
+
+genomic_data <- get_raw_gene_data()%>% 
+  select(-death_from_cancer)
+genomic_data <- genomic_data 
+
+matrix <- data.matrix(genomic_data[1:20])
+matrix <- t(matrix)
+?dist
+
+
+distc <- dist(matrix, method = "euclidean")
+distr <- dist(t(matrix), method = "euclidean")
+hc <- hclust(distc)
+hr <- hclust(distr)
+
+?heatmap.2
+
+heatmap.2(matrix, Rowv=hr, Colv = hc)
+
+heatmap.2(matrix)
+
