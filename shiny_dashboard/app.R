@@ -28,7 +28,7 @@ shinyApp(ui, server)
 
 
 
-
+# Create UI outside for better code readability
 get_clinical_prognosis_ui <- function(){
   return(fluidPage(
     ## Patient Data inputs
@@ -275,6 +275,8 @@ get_clinical_prognosis_ui <- function(){
     ),
   ))
 }
+
+# Create Server outside for better code readability
 get_clinical_prognosis_server <- function(input, output){
   # clinical prognosis
   source("scripts/models.R")
