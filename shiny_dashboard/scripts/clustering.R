@@ -108,6 +108,24 @@ ggplot(cohortPlotData, aes(x = "", y = count, fill = factor(cohort))) +
 
 
 
+get_Cohort_Piechart <- function() { 
+  cohortData <- data.frame("Category"= paste("Cohort", rownames(cohortPlotData)), cohortPlotData)
+  plotData <- cohortData[,c('Category', "count")]
+  fig <- plot_ly(plotData, labels = ~Category, values = ~count, type = 'pie',
+                 textposition = 'inside',
+                 textinfo = 'label+percent',
+                 insidetextfont = list(color = '#FFFFFF'))
+  fig <- fig %>% layout(title = 'Cohorts of the METABRIC dataset',
+                      xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                      yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+  
+plot <- ggplotly(fig)
+return(plot)
+}
+
+
+
+
 hormonePlotData <- data %>%
   mutate(hormone_therapy = data$hormone_therapy) %>%
   group_by(hormone_therapy) %>%
