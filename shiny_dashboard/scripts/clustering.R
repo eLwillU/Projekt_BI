@@ -102,8 +102,11 @@ plot_gene_heatmap <- function(minGini = 3) {
     gather(key = "gene", value = "value", -rownames) %>%
     plot()
   
-  ggplot(filtered_data, aes(x = gene, y = rownames, fill = value)) +
+  plot <- ggplot(filtered_data, aes(x = gene, y = rownames, fill = value)) +
     geom_tile() 
+  
+  return(ggplotly(plot))
+  
 }
 
 # Call the function with your desired minGini value
@@ -128,4 +131,24 @@ heatmap.2(matrix)
 
 fig
 
+
+get_clustering_ui <- function(){
+  return(
+    h1("Patient information"),
+   
+    plotlyOutput("plot1")
+    
+  )
+}
+
+get_clustering_server <- function(input, output){
+  output$plot1 <- renderPlot(
+    {
+      get_gene_heatmap()
+    }
+  )
+  
+  return(output)
+  
+}
 
