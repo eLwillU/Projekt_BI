@@ -113,6 +113,13 @@ p3 <- plot_ly(no_outliers_normalised, x=~tumor_size, type="histogram", nbinsx=20
                             width = 1.5)))
 
 
+p4 <- plot_ly(no_outliers, x=~tumor_size, type="histogram", nbinsx=20,  
+        marker = list(color = 'lightblue',
+                      line = list(color = 'navyblue',
+                                  width = 1.5)))
+
+
+
 hist(data$tumor_size)
 
 
