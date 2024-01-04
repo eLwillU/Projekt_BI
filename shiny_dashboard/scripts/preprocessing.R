@@ -173,7 +173,7 @@ get_raw_gene_data <- function(
     )
   
   first_col_index <- which(names(data) == "death_from_cancer")
-  return(data[,(first_col_index+1):ncol(data)])
+  return(data[,(first_col_index):ncol(data)])
 }
 
 
