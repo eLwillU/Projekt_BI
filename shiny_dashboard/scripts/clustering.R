@@ -66,8 +66,6 @@ matrix <- data.matrix(genomic_data)
 heatmap(matrix)
 
 
-
-
 distc <- dist(matrix, method = "euclidean")
 distr <- dist(t(matrix), method = "euclidean")
 hc <- hclust(distc)
@@ -94,7 +92,8 @@ heatmap.2(matrix)
 plot_gene_heatmap <- function(minGini = 3) {
   gene_df_rownames <- gene_df %>%
     arrange(desc(MeanDecreaseGini)) %>%
-    filter(MeanDecreaseGini > minGini)
+    filter(MeanDecreaseGini > minGini) %>%
+    rownames()
   
   
   filtered_data <- genomic_data %>%
