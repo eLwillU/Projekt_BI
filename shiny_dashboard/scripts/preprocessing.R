@@ -178,3 +178,30 @@ get_raw_gene_data <- function(
 
 
 ## TODO: Standardisierung / Normalisierung. Vielleicht unnötig?
+
+
+
+# Save Data
+saveData <- function(data, filename){
+  saveRDS(data, file = paste0("data/", filename))
+}
+
+
+# Load Data
+loadData <- function(filename){
+  return(readRDS(paste0("data/",filename)))
+}
+
+load_all_data <- function(){  
+  return(loadData("raw_data.rds"))
+}
+
+load_clinical_data <- function(){  
+  return(loadData("raw_clinical_data.rds"))
+}
+
+load_gene_data <- function(){  
+  return(loadData("raw_gene_data.rds"))
+}
+
+
