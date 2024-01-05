@@ -37,3 +37,34 @@ return(
            title="Overall survival Months"
          )))
 }
+
+
+get_death_from_cancer_with_avg_age <- function(){
+  dfc_yes<- data %>%
+    filter(death_from_cancer == "yes")
+  dfc_no <- data %>%
+    filter(death_from_cancer == "no")
+  return(
+  plot_ly(data= data, x=~death_from_cancer ,y=~mean(data$age_at_diagnosis), type="scatter", mode="lines", name="Avg. Age at Diagnosis") %>%
+  add_boxplot(data= dfc_yes,x = ~death_from_cancer, y=~overall_survival_months, inherit  = F, name="Death From Cancer")%>%
+  add_boxplot(data= dfc_no,x = ~death_from_cancer, y=~overall_survival_months, inherit  = F, name="Not Death From Cancer") %>%
+  layout(title="Death from Cancer vs. no Death from cancer",
+         yaxis = list(
+           title="Overall survival Months"),
+         xaxis = list(
+           title="Death from cancer"
+         ),
+         legend = list(
+            orientation="h",
+            y=-0.2))
+)
+}
+
+get_cohort_pie_chart <- function(){
+  return(plot_ly(data = data, labels=paste("Cohort ",data$cohort), values=~cohort, type="pie") %>%
+           layout(title="Cohort-Size overview"))
+}
+
+
+
+
