@@ -8,7 +8,7 @@ ui <- dashboardPage(
   dashboardHeader(title = "Breast-Cancer Dashboard"),
   
   dashboardSidebar(sidebarMenu(
-    menuItem("Overview", tabName = "overview", icon = icon("house")),
+    menuItem("Data Overview", tabName = "overview", icon = icon("house")),
     menuItem("Clinical Prognosis",tabName = "prognosis_clinical",icon = icon("person-dress"))
   )),
   
