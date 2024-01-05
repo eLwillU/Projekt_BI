@@ -1,6 +1,6 @@
 library(shiny)
 library(shinydashboard)
-source("scripts/clustering_clean.R")
+source("scripts/overview.R")
 
 # Create UI outside for better code readability
 get_clinical_prognosis_ui <- function(){
@@ -380,15 +380,13 @@ ui <- dashboardPage(
       get_clinical_prognosis_ui()
     ),
     tabItem(tabName = "overview",
-            fluidPage(
-              plotOutput("plot1"))
-            )
-  )),
+            get_overview_ui()
+  ))),
 )
 
 
 server <- function(input, output) {
-  get_clustering_server(input,output)
+  get_overview_Server(input,output)
   get_clinical_prognosis_server(input,output)
  
 }

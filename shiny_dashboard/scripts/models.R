@@ -144,7 +144,7 @@ get_clinical_rftree_model_survival <- function() {
 # Create a random forest model with the gene data set.
 train_gene_rf_model <- function(df){
   library(randomForest)
-  randomForest_model <- randomForest(death_from_cancer ~ ., data = genomic_data[,1:3])
+  randomForest_model <- randomForest(death_from_cancer ~ ., data = genomic_data)
   saveRDS(randomForest_model,"models/gene_rf_death_from_cancer.rds")
 }
 # Load the random forest model with the gene data set.

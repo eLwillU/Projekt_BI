@@ -7,7 +7,24 @@ library(plotly)
 
 data <- get_raw_clinical_data()
 
-str(data)
+plot_ly(data = data, x=~cancer_type_detailed, y=~overall_survival_months, type="box", color=~cancer_type_detailed,  boxpoints = "all", jitter = 0.3,
+        pointpos = -1.8)%>% 
+  layout(title = "overall survival months per cancer type",
+  xaxis = list(zerolinecolor = '#ffff',
+             zerolinewidth = 2,
+             gridcolor = 'ffff',
+             showticklabels=FALSE,
+             title=list(text='Cancer Types', standoff = 0)
+  ),
+  
+  yaxis = list(
+          title="Overall Survival Months"
+  ),
+  
+  legend = list(orientation = 'h'))
+
+
+
 
 par(mfrow=c(2 ,2))
 
