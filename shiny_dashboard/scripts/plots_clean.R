@@ -5,9 +5,7 @@ library(ggeasy)
 library(dplyr)
 library(plotly)
 
-data <- get_raw_clinical_data()
-
-fig <- get_survival_by_cancertype_plot()
+data <- load_clinical_data()
 
 
 get_survival_by_cancertype_plot <- function(){
@@ -18,12 +16,24 @@ return(plot_ly(data = data, x=~cancer_type_detailed, y=~overall_survival_months,
                       zerolinewidth = 2,
                       gridcolor = 'ffff',
                       showticklabels=FALSE,
-                      title=list(text='Cancer Types', standoff = 0)
+                      title=list(text='Cancer Types')
          ),
          
          yaxis = list(
            title="Overall Survival Months"
          ),
-         legend = list(orientation = 'h')))
+         legend = list(orientation = 'h',
+                       y=-0.3)))
 }
 
+get_survival_by_cancer_or_disease <- function() {
+return(
+  plot_ly(data = data, x=~death_from_cancer,y=~overall_survival_months, type="box") %>%
+  layout(title="Overall surivival Months comaring cancer or not",
+         xaxis = list(
+           title="Death from cancer"
+         ),
+         yaxis = list(
+           title="Overall survival Months"
+         )))
+}

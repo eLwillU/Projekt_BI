@@ -44,9 +44,17 @@ get_plotly_heatmap <- function(minGini = 3){
   filtered_data <- genomic_data %>%
     select(gene_df_rownames)
   matrix <- data.matrix(filtered_data)
-  fig <- plot_ly(x= colnames(matrix), z = matrix, type = "heatmap", colors="Oranges")
-
+  return(
+    plot_ly(x= colnames(matrix), z = matrix, type = "heatmap", colors="Oranges") %>%
+      layout(title="Gene heatmap",
+             xaxis=list(
+               title="Genes"
+             ),
+             yaxis=list(
+               title="Samples"
+             ))
+      
+    )
   
-  return(fig)
 }
 

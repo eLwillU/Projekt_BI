@@ -5,7 +5,7 @@ library(ggeasy)
 library(dplyr)
 library(plotly)
 
-data <- get_raw_clinical_data()
+data <- load_clinical_data()
 
 plot_ly(data = data, x=~cancer_type_detailed, y=~overall_survival_months, type="box", color=~cancer_type_detailed,  boxpoints = "all", jitter = 0.3,
         pointpos = -1.8)%>% 
@@ -22,6 +22,7 @@ plot_ly(data = data, x=~cancer_type_detailed, y=~overall_survival_months, type="
   ),
   
   legend = list(orientation = 'h'))
+
 
 
 
