@@ -1,5 +1,5 @@
-source("scripts/clustering_clean.R")
-source("scripts/plots_clean.R")
+source("scripts/clustering.R")
+source("scripts/plots.R")
 
 
 

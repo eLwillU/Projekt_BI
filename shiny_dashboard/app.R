@@ -1,7 +1,7 @@
 library(shiny)
 library(shinydashboard)
-source("scripts/overview.R")
-source("scripts/clinical_prognosis.R")
+source("dashboards/overview.R")
+source("dashboards/clinical_prognosis.R")
 
 
 ui <- dashboardPage(
