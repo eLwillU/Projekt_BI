@@ -15,6 +15,7 @@ get_overview_ui <- function(){
       box(plotlyOutput("plot6")),
       box(plotOutput("plot8")),
       box(plotOutput("plot9")),
+      box(plotOutput("plot10")),
       
 )
       
@@ -22,8 +23,8 @@ get_overview_ui <- function(){
 }
 ## TODO: add plot 7
 get_overview_Server <- function(input, output){
-  output$plot1 <- renderPlot({get_static_heatmap(4)})
-  output$plot2 <- renderPlotly({ get_plotly_heatmap(4)
+  output$plot1 <- renderPlot({get_static_heatmap()})
+  output$plot2 <- renderPlotly({ get_plotly_heatmap()
   })
   output$plot3 <- renderPlotly(get_survival_by_cancertype_plot())
   output$plot4 <- renderPlotly(get_survival_by_cancer_or_disease())
@@ -32,6 +33,6 @@ get_overview_Server <- function(input, output){
   output$plot7 <- renderPlotly(get_cohort_pie_chart())
   output$plot8 <- renderPlot(get_dfc_dendrogram())
   output$plot9 <- renderPlot(get_not_dfc_dendrogram())
-  
+  output$plot10 <- renderPlot(get_pca_scree())
   return(output)
 }
