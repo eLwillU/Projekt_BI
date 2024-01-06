@@ -150,7 +150,7 @@ train_gene_rf_model <- function(df){
 # Load the random forest model with the gene data set.
 get_gene_rf_model <- function(){
   library(randomForest)
-  loaded_model <- readRDS("models/rf_death_from_cancer.rds")
+  loaded_model <- readRDS("models/gene_rf_death_from_cancer.rds")
   return(loaded_model)
 }
 

@@ -1,4 +1,5 @@
 source("scripts/preprocessing.R")
+source("scripts/models.R")
 library(ggplot2)
 library(ggformula)
 library(ggeasy)
@@ -10,57 +11,49 @@ library(plotly)
 library(ggdendro)
 library(factoextra)
 
-# Load all data
-gene_data <- load_all_data()
-
-
-get_gene_rf_model <- function(){
-  library(randomForest)
-  loaded_model <- readRDS("models/gene_rf_death_from_cancer.rds")
-  return(loaded_model)
+get_gene_df_rownames <- function() {
+  # Load all data
+  data <- load_all_data()
+  
+  # Random Forest for feature selection
+  gene_randomForest_model <- get_gene_rf_model()
+  gene_feature_importance <- importance(gene_randomForest_model)
+  
+  # Create Data Frame from mean decrease gini coefficents
+  gene_df <- data.frame(col2 = gene_feature_importance)
+  
+  # Get rownames of genes
+  gene_df_rownames <- gene_df %>%
+    arrange(desc(MeanDecreaseGini)) %>%
+    filter(MeanDecreaseGini > 4) %>%
+    rownames()
 }
-
-# Random Forest for feature selection
-randomForest_model <- get_gene_rf_model()
-feature_importance <- importance(randomForest_model)
-
-# Create Data Frame from mean decrease gini coefficents
-gene_df <- data.frame(col2 = feature_importance)
-
-# Get rownames of genes
-gene_df_rownames <- gene_df %>%
-  arrange(desc(MeanDecreaseGini)) %>%
-  filter(MeanDecreaseGini > 4) %>%
-  rownames()
-
-# Filter the data by rownames
-
-filtered_data <- gene_data %>%
-  dplyr::select(gene_df_rownames)
-
-
-# Create matrix
-matrix <- data.matrix(filtered_data)
-
-# Normalize matrix
-normalize <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
-}
-
-normalized_matrix <- apply(matrix, 2, normalize)
-
 
 
 get_static_heatmap <- function(){
-  fig <- heatmap(matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap")
+  data <- load_all_data()
+  gene_df_rownames <- get_gene_df_rownames()
+  # Filter the data by rownames
+  filtered_gene_data <- data %>%
+    dplyr::select(all_of(gene_df_rownames))
+  
+  # Create gene_matrix
+  gene_matrix <- data.matrix(filtered_gene_data)
+  fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap")
   return(fig)
 }
 
-?plot_ly
-
 get_plotly_heatmap <- function(){
+  data <- load_all_data()
+  gene_df_rownames <- get_gene_df_rownames()
+  # Filter the data by rownames
+  filtered_gene_data <- data %>%
+    dplyr::select(all_of(gene_df_rownames))
+  
+  # Create gene_matrix
+  gene_matrix <- data.matrix(filtered_gene_data)
    return(
-    plot_ly(x= colnames(matrix), z = matrix, type = "heatmap", colors="Oranges") %>%
+    plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%
       layout(title="Gene heatmap",
              xaxis=list(
                title="Genes"
@@ -73,8 +66,10 @@ get_plotly_heatmap <- function(){
 }
 
 get_dfc_dendrogram <- function(minGini = 4){
+  gene_df_rownames <- get_gene_df_rownames()
+  data <- load_all_data()
   title <- "Death from cancer"
-  cluster_data_death_from_cancer <- gene_data %>%
+  cluster_data_death_from_cancer <- data %>%
     dplyr::select(death_from_cancer, gene_df_rownames) %>%
     dplyr::filter(death_from_cancer == "yes") %>%
     dplyr::select(gene_df_rownames)
@@ -90,8 +85,10 @@ get_dfc_dendrogram <- function(minGini = 4){
 
 
 get_not_dfc_dendrogram <- function(minGini = 4){
+  gene_df_rownames <- get_gene_df_rownames()
+  data <- load_all_data()
     title <- "Not death from cancer"
-    cluster_data_death_from_cancer <- gene_data %>%
+    cluster_data_death_from_cancer <- data %>%
       dplyr::select(death_from_cancer, gene_df_rownames) %>%
       dplyr::filter(death_from_cancer == "no") %>%
       dplyr::select(gene_df_rownames) 
@@ -104,28 +101,58 @@ get_not_dfc_dendrogram <- function(minGini = 4){
     ggtitle(title) +
     theme(plot.title = element_text(hjust = 0.5))
   return (p)
-
-  
 }
 
 # TODO: Cluster groups
 # clustergroups <- cutree(clusterGenes, k=5)
 # tapply(cluster_data$aurka, clustergroups, mean)
 
-
-get_pca_scree <- function(){
-  pca <- prcomp(matrix, scale=F)
+# pca scree all numeric data
+get_pca_scree_all_numeric <- function(){
+  data <- load_all_data()
+  numeric_df <- data %>% select_if(is.numeric)
+  pca <- prcomp(numeric_df, scale=F)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  
-  p<- fviz_eig(pca,
-               addlabels=T, main = "Scree Plot PCA")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for all the data")
   return(p)
 }
 
+# pca scree all numeric clinical data
+get_pca_scree_clinical_numeric <- function(){
+  clinical_data <- load_clinical_data()
+  numeric_clinical_df <- clinical_data %>% select_if(is.numeric)
+  pca <- prcomp(numeric_clinical_df, scale=F)
+  pca.var <- pca$sdev^2
+  pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for clinical data")
+  return(p)
+}
 
+# pca scree all gene data
+get_pca_scree_all_gene <- function(){
+  gene_data_df <- load_gene_data()
+  numeric_gene_df <- gene_data_df %>% select_if(is.numeric)
+  pca <- prcomp(numeric_gene_df, scale=F)
+  pca.var <- pca$sdev^2
+  pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene data")
+  return(p)
+}
 
-
-
-
-
+# pca scree filtered gene data
+get_pca_scree_filtered_gene <- function(){
+  data <- load_all_data()
+  gene_df_rownames <- get_gene_df_rownames()
+  # Filter the data by rownames
+  filtered_gene_data <- data %>%
+    dplyr::select(all_of(gene_df_rownames))
+  
+  # Create gene_matrix
+  gene_matrix <- data.matrix(filtered_gene_data)
+  pca <- prcomp(gene_matrix, scale=F)
+  pca.var <- pca$sdev^2
+  pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene data")
+  return(p)
+}

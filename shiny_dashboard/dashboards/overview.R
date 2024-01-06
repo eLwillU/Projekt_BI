@@ -33,6 +33,6 @@ get_overview_Server <- function(input, output){
   output$plot7 <- renderPlotly(get_cohort_pie_chart())
   output$plot8 <- renderPlot(get_dfc_dendrogram())
   output$plot9 <- renderPlot(get_not_dfc_dendrogram())
-  output$plot10 <- renderPlot(get_pca_scree())
+  output$plot10 <- renderPlot(get_pca_scree_filtered_gene())
   return(output)
 }

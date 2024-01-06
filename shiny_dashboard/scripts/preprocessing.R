@@ -1,3 +1,8 @@
+# Normalize matrix
+normalize <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
 get_raw_data <- function(
     remove_outliers = FALSE, 
     balance_data = TRUE,
@@ -127,10 +132,6 @@ get_raw_data <- function(
   
   ## normalize
   if(normalize_data) {
-    normalize <- function(x) {
-      (x - min(x)) / (max(x) - min(x))
-    }
-    
     raw_data <- raw_data %>%
       mutate_if(is.numeric, normalize)
   }

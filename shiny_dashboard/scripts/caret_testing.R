@@ -3,6 +3,12 @@ library(caret)
 library(e1071)
 library(dplyr)
 
+test0 <- get_raw_clinical_data(normalize_data = TRUE)
+numeric_df <- test0 %>% select_if(is.numeric)
+pca <- prcomp(numeric_df)
+summary(pca)
+
+
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
