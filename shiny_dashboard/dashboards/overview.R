@@ -3,35 +3,50 @@ source("scripts/plots.R")
 source("scripts/preprocessing.R")
 
 
-get_overview_ui <- function(){
-  return(
-    fluidPage(
-      h1("Overview"),
-      box(plotOutput("plot1")),
-      box(plotlyOutput("plot2")),
-      box(plotlyOutput("plot3")),
-      box(plotlyOutput("plot4")),
-      box(plotlyOutput("plot5")),
-      box(plotlyOutput("plot6")),
-      box(plotOutput("plot8")),
-      box(plotOutput("plot9")),
-      
-      # PCA plots
-      box(plotOutput("pca1")),
-      box(plotOutput("pca2")),
-      box(plotOutput("pca3")),
-      box(plotOutput("pca4")),
-)
-      
-  )
+get_overview_ui <- function() {
+  return(tabsetPanel(type = "tabs",
+                     tabPanel(
+                       "Heatmaps",
+                       fluidPage(
+                         h1("Heatmaps"),
+                         box(plotOutput("plot1")),
+                         box(plotlyOutput("plot2")),
+                       )
+                     ),
+                     tabPanel(
+                       "General",
+                       fluidPage(
+                         h1("Overview"),
+                         box(plotlyOutput("plot3")),
+                         box(plotlyOutput("plot4")),
+                         box(plotlyOutput("plot5")),
+                         box(plotlyOutput("plot6")),
+                         box(plotOutput("plot8")),
+                         box(plotOutput("plot9")),
+                       )
+                     ),
+                     tabPanel(
+                       "PCA",
+                       fluidPage(
+                         h1("PCA Analysis"),
+                         # PCA plots
+                         box(plotOutput("pca1")),
+                         box(plotOutput("pca2")),
+                         box(plotOutput("pca3")),
+                         box(plotOutput("pca4")),
+                       )
+                     ),
+                     
+                     ))
 }
 ## TODO: add plot 7
 get_overview_Server <- function(input, output){
   
   # prep data
-  clinical_data <- load_clinical_data()
-  all_data <- load_all_data()
-  gene_data <- load_gene_data()
+  clinical_data <- get_raw_clinical_data(balance_data = FALSE)
+  all_data <- get_raw_data(balance_data = FALSE)
+  gene_data <- get_raw_gene_data(balance_data = FALSE)
+  
   gene_df_rownames <- get_gene_df_rownames()
   gene_matrix <- get_gene_matrix(all_data, gene_df_rownames)
   
