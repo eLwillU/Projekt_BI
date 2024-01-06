@@ -26,16 +26,20 @@ get_overview_Server <- function(input, output){
   
   # prep data
   clinical_data <- load_clinical_data()
+  all_data <- load_all_data()
+  gene_data <- load_gene_data()
+  gene_df_rownames <- get_gene_df_rownames()
+  gene_matrix <- get_gene_matrix(all_data, gene_df_rownames)
   
-  output$plot1 <- renderPlot({get_static_heatmap()})
-  output$plot2 <- renderPlotly({ get_plotly_heatmap()})
+  output$plot1 <- renderPlot({get_static_heatmap(gene_matrix)})
+  output$plot2 <- renderPlotly({ get_plotly_heatmap(gene_matrix)})
   output$plot3 <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
   output$plot4 <- renderPlotly(get_survival_by_cancer_or_disease(clinical_data))
   output$plot5 <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
   output$plot6 <- renderPlotly(get_cohort_pie_chart(clinical_data))
   output$plot7 <- renderPlotly(get_cohort_pie_chart(clinical_data))
-  output$plot8 <- renderPlot(get_dfc_dendrogram())
-  output$plot9 <- renderPlot(get_not_dfc_dendrogram())
-  output$plot10 <- renderPlot(get_pca_scree_filtered_gene())
+  output$plot8 <- renderPlot(get_dfc_dendrogram(all_data = all_data, gene_df_rownames = gene_df_rownames))
+  output$plot9 <- renderPlot(get_not_dfc_dendrogram(all_data = all_data, gene_df_rownames = gene_df_rownames))
+  output$plot10 <- renderPlot(get_pca_scree_filtered_gene(gene_matrix))
   return(output)
 }
