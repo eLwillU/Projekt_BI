@@ -6,8 +6,7 @@ source("scripts/clinical_prognosis.R")
 
 ui <- dashboardPage(
   dashboardHeader(title = "Breast-Cancer Dashboard"),
-  
-  dashboardSidebar(sidebarMenu(
+    dashboardSidebar(sidebarMenu(
     menuItem("Data Overview", icon = icon("house"), tabName = "overview"),
     menuItem("Clinical Prognosis",tabName = "prognosis_clinical",icon = icon("person-dress"))
   )),
@@ -21,7 +20,6 @@ ui <- dashboardPage(
   )
   )),
 )
-
 
 server <- function(input, output) {
   get_overview_Server(input,output)
