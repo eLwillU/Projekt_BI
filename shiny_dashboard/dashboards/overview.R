@@ -1,6 +1,6 @@
 source("scripts/clustering.R")
 source("scripts/plots.R")
-
+source("scripts/preprocessing.R")
 
 
 get_overview_ui <- function(){
@@ -23,14 +23,17 @@ get_overview_ui <- function(){
 }
 ## TODO: add plot 7
 get_overview_Server <- function(input, output){
+  
+  # prep data
+  clinical_data <- load_clinical_data()
+  
   output$plot1 <- renderPlot({get_static_heatmap()})
-  output$plot2 <- renderPlotly({ get_plotly_heatmap()
-  })
-  output$plot3 <- renderPlotly(get_survival_by_cancertype_plot())
-  output$plot4 <- renderPlotly(get_survival_by_cancer_or_disease())
-  output$plot5 <- renderPlotly(get_death_from_cancer_with_avg_age())
-  output$plot6 <- renderPlotly(get_cohort_pie_chart())
-  output$plot7 <- renderPlotly(get_cohort_pie_chart())
+  output$plot2 <- renderPlotly({ get_plotly_heatmap()})
+  output$plot3 <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
+  output$plot4 <- renderPlotly(get_survival_by_cancer_or_disease(clinical_data))
+  output$plot5 <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
+  output$plot6 <- renderPlotly(get_cohort_pie_chart(clinical_data))
+  output$plot7 <- renderPlotly(get_cohort_pie_chart(clinical_data))
   output$plot8 <- renderPlot(get_dfc_dendrogram())
   output$plot9 <- renderPlot(get_not_dfc_dendrogram())
   output$plot10 <- renderPlot(get_pca_scree_filtered_gene())
