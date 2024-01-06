@@ -118,11 +118,11 @@ get_pca_scree_clinical_numeric <- function(clinical_data){
 
 # pca scree all gene data
 get_pca_scree_all_gene <- function(gene_data){
-  numeric_gene_df <- gene_data_df %>% select_if(is.numeric)
+  numeric_gene_df <- gene_data %>% select_if(is.numeric)
   pca <- prcomp(numeric_gene_df, scale=F)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene data")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for all gene data")
   return(p)
 }
 

@@ -15,8 +15,12 @@ get_overview_ui <- function(){
       box(plotlyOutput("plot6")),
       box(plotOutput("plot8")),
       box(plotOutput("plot9")),
-      box(plotOutput("plot10")),
       
+      # PCA plots
+      box(plotOutput("pca1")),
+      box(plotOutput("pca2")),
+      box(plotOutput("pca3")),
+      box(plotOutput("pca4")),
 )
       
   )
@@ -40,6 +44,11 @@ get_overview_Server <- function(input, output){
   output$plot7 <- renderPlotly(get_cohort_pie_chart(clinical_data))
   output$plot8 <- renderPlot(get_dfc_dendrogram(all_data = all_data, gene_df_rownames = gene_df_rownames))
   output$plot9 <- renderPlot(get_not_dfc_dendrogram(all_data = all_data, gene_df_rownames = gene_df_rownames))
-  output$plot10 <- renderPlot(get_pca_scree_filtered_gene(gene_matrix))
+  
+  # PCA plots
+  output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))
+  output$pca2 <- renderPlot(get_pca_scree_clinical_numeric(clinical_data))
+  output$pca3 <- renderPlot(get_pca_scree_all_gene(gene_data))
+  output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_matrix))
   return(output)
 }
