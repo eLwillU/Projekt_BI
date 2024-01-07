@@ -11,6 +11,7 @@ Ideen:
 - Dashboard mit Ganz vielen Inputs, mit der man direkt sehen kann was die Auswirkung auf das Überleben des Patienten hat
 
 TODO:
+- SCALE verändert PCA extrem. Wieso erklärung? AGE scheint grossen Einfluss zu haben
 - Kodierung ?!?
 - Dashboard um Daten kennenzulernen
  - Vergleiche von Krebstypen
