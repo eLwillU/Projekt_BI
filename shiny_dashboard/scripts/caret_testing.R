@@ -3,7 +3,13 @@ library(caret)
 library(e1071)
 library(dplyr)
 
-clinical_data <- get_raw_clinical_data(normalize_data = TRUE)
+clinical_data <- get_raw_clinical_data(normalize_data = FALSE)
+
+clinical_data$overall_survival_months
+
+fig <- plot_ly(clinical_data, x = ~cancer_type_detailed, y = ~overall_survival_months, type = "box") %>% layout(boxmode = "group")
+fig
+
 
 get_generic_piechart <- function(clinical_data, labels, title, labelType = "label+percent") {
   fig <-
