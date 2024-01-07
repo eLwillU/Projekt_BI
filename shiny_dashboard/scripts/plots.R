@@ -55,8 +55,7 @@ get_generic_boxplot <-
         data = clinical_data,
         x = ~ x,
         y = ~ y,
-        type = 'box',
-        color = ~ death_from_cancer
+        type = 'box'
       )
     fig <-
       fig %>% layout(
