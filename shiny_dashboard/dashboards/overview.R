@@ -4,57 +4,74 @@ source("scripts/preprocessing.R")
 
 
 get_overview_ui <- function() {
-  return(tabsetPanel(type = "tabs",
-                     tabPanel(
-                       "General",
-                       fluidPage(
-                         h1("General"),
-                         box(plotlyOutput("cancerTypeBoxplot")),
-                         box(plotlyOutput("survivalBoxplot")),
-                         box(plotlyOutput("ageBoxplot")),
-                         box(plotlyOutput("tumorSizeBoxplot")),
-                         
-                         box(plotlyOutput("cancerTypePiechart")),
-                         box(plotlyOutput("surgeryTypePiechart")),
-                         box(plotlyOutput("chemoPiechart")),
-                         box(plotlyOutput("hormonePiechart")),
-                         box(plotlyOutput("cohortPiechart")),
-                       )
-                     ),
-                     tabPanel(
-                       "Heatmaps",
-                       fluidPage(
-                         h1("Heatmaps"),
-                         selectInput("showDendros", "Show Dendrograms",
-                                     c(yes = "yes", no = "no")
-                         ),
-                         conditionalPanel(
-                           condition = "input.showDendros == 'yes'",
-                           checkboxInput("input.dendro", "Show dendrograms", F),
-                           box(plotOutput("heatmapDFC")),
-                           box(plotOutput("heatmapNoDFC")),
-                         ),
-                         conditionalPanel(
-                           # TODO: Plots without dendrogram
-                           condition = "input.showDendros == 'no'",
-                           box(plotlyOutput("plotlyHeatmapDFC")),
-                           box(plotlyOutput("plotlyHeatmapNoDFC")),
-                         ),
-                       )
-                     ),
-                     tabPanel(
-                       "PCA",
-                       fluidPage(
-                         h1("PCA Analysis"),
-                         # PCA plots
-                         box(plotOutput("pca1")),
-                         box(plotOutput("pca2")),
-                         box(plotOutput("pca3")),
-                         box(plotOutput("pca4")),
-                       )
-                     ),
-                     
-                     ))
+  return(fluidPage(
+    checkboxGroupInput(
+      "selectedPlots",
+      "Select Plots to Show",
+      inline = TRUE,
+      choices = list(
+        "Boxplots" = "showBoxplots",
+        "Piecharts" = "showPiecharts"
+      ),
+      selected = list("showBoxplots", "showPiecharts")
+    ),
+    
+    tabsetPanel(type = "tabs",
+                tabPanel(
+                  "General",
+                  fluidPage(
+                    h1("General"),
+                    conditionalPanel(
+                      condition = "input.selectedPlots.includes('showBoxplots')",
+                      box(plotlyOutput("cancerTypeBoxplot")),
+                      box(plotlyOutput("survivalBoxplot")),
+                      box(plotlyOutput("ageBoxplot")),
+                      box(plotlyOutput("tumorSizeBoxplot")),
+                    ),
+                    conditionalPanel(
+                      condition = "input.selectedPlots.includes('showPiecharts')",
+                      box(plotlyOutput("cancerTypePiechart")),
+                      box(plotlyOutput("surgeryTypePiechart")),
+                      box(plotlyOutput("chemoPiechart")),
+                      box(plotlyOutput("hormonePiechart")),
+                      box(plotlyOutput("cohortPiechart")),
+                    ),
+                  )
+                ),
+                tabPanel(
+                  "Heatmaps",
+                  fluidPage(
+                    h1("Heatmaps"),
+                    selectInput("showDendros", "Show Dendrograms",
+                                c(yes = "yes", no = "no")
+                    ),
+                    conditionalPanel(
+                      condition = "input.showDendros == 'yes'",
+                      checkboxInput("input.dendro", "Show dendrograms", F),
+                      box(plotOutput("heatmapDFC")),
+                      box(plotOutput("heatmapNoDFC")),
+                    ),
+                    conditionalPanel(
+                      # TODO: Plots without dendrogram
+                      condition = "input.showDendros == 'no'",
+                      box(plotlyOutput("plotlyHeatmapDFC")),
+                      box(plotlyOutput("plotlyHeatmapNoDFC")),
+                    ),
+                  )
+                ),
+                tabPanel(
+                  "PCA",
+                  fluidPage(
+                    h1("PCA Analysis"),
+                    # PCA plots
+                    box(plotOutput("pca1")),
+                    box(plotOutput("pca2")),
+                    box(plotOutput("pca3")),
+                    box(plotOutput("pca4")),
+                  )
+                ),
+                
+    )))
 }
 
 get_overview_Server <- function(input, output){
