@@ -3,11 +3,14 @@ library(caret)
 library(e1071)
 library(dplyr)
 
-test0 <- get_raw_clinical_data(normalize_data = TRUE)
-numeric_df <- test0 %>% select_if(is.numeric)
-pca <- prcomp(numeric_df)
-summary(pca)
+clinical_data <- get_raw_clinical_data(balance_data = FALSE)
+all_data <- get_raw_data(balance_data = FALSE)
+gene_data <- get_raw_gene_data(balance_data = FALSE)
 
+gene_matrix <- as.matrix(gene_data)
+test12 <- gene_matrix %>% 
+  base::subset(gene_data[,"death_from_cancer"] == "no")
+test12
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)

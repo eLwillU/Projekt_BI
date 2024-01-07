@@ -39,25 +39,59 @@ get_gene_matrix <- function(all_data, gene_df_rownames) {
 }
 
 
-get_static_heatmap <- function(gene_matrix){
-  fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap")
-  return(fig)
+get_static_heatmap <- function(gene_matrix, death_from_cancer = TRUE){
+  if(death_from_cancer) {
+    gene_matrix <- gene_matrix %>% 
+      base::subset(gene_data[,"death_from_cancer"] == "yes")
+    fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Death from Cancer)")
+    return(fig)
+  } 
+  else {
+    gene_matrix <- gene_matrix %>% 
+      base::subset(gene_data[,"death_from_cancer"] == "no")
+    fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Survived Cancer)")
+    return(fig)
+  }
 }
 
-get_plotly_heatmap <- function(gene_matrix){
-   return(
-    plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%
-      layout(title="Gene heatmap",
-             xaxis=list(
-               title="Genes"
-             ),
-             yaxis=list(
-               title="Samples"
-             )
+get_plotly_heatmap <- function(gene_matrix, death_from_cancer = TRUE){
+  
+  if(death_from_cancer) {
+    gene_matrix <- gene_matrix %>% 
+      base::subset(gene_data[,"death_from_cancer"] == "yes")
+    
+    return(
+      plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%
+        layout(title="Gene Heatmap (Death from Cancer)",
+               xaxis=list(
+                 title="Genes"
+               ),
+               yaxis=list(
+                 title="Samples"
+               )
         )
     )
+  } 
+  
+  else {
+    gene_matrix <- gene_matrix %>% 
+      base::subset(gene_data[,"death_from_cancer"] == "no")
+    
+    return(
+      plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%
+        layout(title="Gene Heatmap (Survived Cancer)",
+               xaxis=list(
+                 title="Genes"
+               ),
+               yaxis=list(
+                 title="Samples"
+               )
+        )
+    )
+  }
 }
 
+# UNUSED
 get_dfc_dendrogram <- function(all_data, gene_df_rownames, minGini = 4){
   title <- "Death from cancer"
   cluster_data_death_from_cancer <- all_data %>%
@@ -74,7 +108,7 @@ get_dfc_dendrogram <- function(all_data, gene_df_rownames, minGini = 4){
   return (p)
 }
 
-
+# UNUSED
 get_not_dfc_dendrogram <- function(all_data, gene_df_rownames, minGini = 4){
     title <- "Not death from cancer"
     cluster_data_death_from_cancer <- all_data %>%

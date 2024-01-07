@@ -5,8 +5,7 @@ library(dplyr)
 library(plotly)
 
 get_survival_by_cancertype_plot <- function(clinical_data){
-    return(plot_ly(data = clinical_data, x=~cancer_type_detailed, y=~overall_survival_months, type="box", color=~cancer_type_detailed,  boxpoints = "all", jitter = 0.3,
-            pointpos = -1.8)%>% 
+    return(plot_ly(data = clinical_data, x=~cancer_type_detailed, y=~overall_survival_months, type="box", color=~cancer_type_detailed) %>% 
       layout(title = "overall survival months per cancer type",
              xaxis = list(zerolinecolor = '#ffff',
                           zerolinewidth = 2,

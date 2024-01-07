@@ -13,9 +13,10 @@ Ideen:
 TODO:
 - Kodierung ?!?
 - Dashboard um Daten kennenzulernen
- - Clustering
  - Vergleiche von Krebstypen
- - PCA
+ - Mix von krebstypen (nico)
+ - Mix von Therapien (domi)
+ - Outlier in boxplots
 - Dashboard für Prognose mit klinischen Daten
  - Feature Selection
  - LASSO
