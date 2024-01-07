@@ -6,6 +6,16 @@ source("scripts/preprocessing.R")
 get_overview_ui <- function() {
   return(tabsetPanel(type = "tabs",
                      tabPanel(
+                       "General",
+                       fluidPage(
+                         h1("General"),
+                         box(plotlyOutput("cancerTypeBoxplot")),
+                         box(plotlyOutput("survivalBoxplot")),
+                         box(plotlyOutput("cohortPiechart")),
+                         box(plotlyOutput("tumorSizeBoxplot"))
+                       )
+                     ),
+                     tabPanel(
                        "Heatmaps",
                        fluidPage(
                          h1("Heatmaps"),
@@ -24,16 +34,6 @@ get_overview_ui <- function() {
                            box(plotlyOutput("plotlyHeatmapDFC")),
                            box(plotlyOutput("plotlyHeatmapNoDFC")),
                          ),
-                       )
-                     ),
-                     tabPanel(
-                       "General",
-                       fluidPage(
-                         h1("General"),
-                         box(plotlyOutput("cancerTypeBoxplot")),
-                         box(plotlyOutput("survivalBoxplot")),
-                         box(plotlyOutput("cohortPiechart")),
-                         box(plotlyOutput("tumorSizeBoxplot"))
                        )
                      ),
                      tabPanel(
@@ -61,17 +61,17 @@ get_overview_Server <- function(input, output){
   gene_df_rownames <- get_gene_df_rownames()
   gene_df <- get_gene_df(all_data, gene_df_rownames)
   
+  # General plots
+  output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
+  output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
+  output$cohortPiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$cohort, "Cohort Distribution"))
+  output$tumorSizeBoxplot <- renderPlotly(get_tumor_size_plot(clinical_data))
+  
   # Heatmaps
   output$heatmapDFC <- renderPlot({get_static_heatmap(gene_df, death_from_cancer = TRUE)})
   output$plotlyHeatmapDFC <- renderPlotly({ get_plotly_heatmap(gene_df, death_from_cancer = TRUE)})
   output$heatmapNoDFC <- renderPlot({get_static_heatmap(gene_df, death_from_cancer = FALSE)})
   output$plotlyHeatmapNoDFC <- renderPlotly({ get_plotly_heatmap(gene_df, death_from_cancer = FALSE)})
-  
-  # General plots
-  output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
-  output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
-  output$cohortPiechart <- renderPlotly(get_cohort_pie_chart(clinical_data))
-  output$tumorSizeBoxplot <- renderPlotly(get_tumor_size_plot(clinical_data))
   
   # PCA plots
   output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))

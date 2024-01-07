@@ -3,14 +3,38 @@ library(caret)
 library(e1071)
 library(dplyr)
 
-test0 <- get_raw_clinical_data(normalize_data = TRUE)
-numeric_df <- test0 %>% select_if(is.numeric)
-pca <- prcomp(numeric_df)
-summary(pca)
+clinical_data <- get_raw_clinical_data(normalize_data = TRUE)
 
-test <- get_raw_gene_data() %>% select(-death_from_cancer)
-min(test)
-max(test)
+get_generic_piechart <- function(clinical_data, labels, title, labelType = "label+percent") {
+  fig <-
+    plot_ly(
+      data = clinical_data,
+      labels = ~ labels,
+      type = 'pie',
+      textposition = 'inside',
+      textinfo = labelType
+    )
+  fig <-
+    fig %>% layout(
+      title = title,
+      xaxis = list(
+        showgrid = FALSE,
+        zeroline = FALSE,
+        showticklabels = FALSE
+      ),
+      yaxis = list(
+        showgrid = FALSE,
+        zeroline = FALSE,
+        showticklabels = FALSE
+      )
+    )
+  
+  return(fig)
+}
+
+get_generic_piechart(clinical_data, clinical_data$death_from_cancer, "test")
+
+
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)

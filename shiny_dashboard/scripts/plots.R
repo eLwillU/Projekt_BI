@@ -42,9 +42,31 @@ get_death_from_cancer_with_avg_age <- function(clinical_data){
 )
 }
 
-get_cohort_pie_chart <- function(clinical_data){
-  return(plot_ly(data = clinical_data, labels=paste("Cohort ",clinical_data$cohort), values=~cohort, type="pie") %>%
-           layout(title="Cohort-Size overview"))
+get_generic_piechart <- function(clinical_data, labels, title, labelType = "label+percent") {
+  fig <-
+    plot_ly(
+      data = clinical_data,
+      labels = ~ labels,
+      type = 'pie',
+      textposition = 'inside',
+      textinfo = labelType
+    )
+  fig <-
+    fig %>% layout(
+      title = title,
+      xaxis = list(
+        showgrid = FALSE,
+        zeroline = FALSE,
+        showticklabels = FALSE
+      ),
+      yaxis = list(
+        showgrid = FALSE,
+        zeroline = FALSE,
+        showticklabels = FALSE
+      )
+    )
+  
+  return(fig)
 }
 
 get_tumor_size_plot <- function(clinical_data){
