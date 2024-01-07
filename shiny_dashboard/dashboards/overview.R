@@ -11,6 +11,7 @@ get_overview_ui <- function() {
                          h1("General"),
                          box(plotlyOutput("cancerTypeBoxplot")),
                          box(plotlyOutput("survivalBoxplot")),
+                         box(plotlyOutput("ageBoxplot")),
                          box(plotlyOutput("tumorSizeBoxplot")),
                          
                          box(plotlyOutput("cancerTypePiechart")),
@@ -68,8 +69,39 @@ get_overview_Server <- function(input, output){
   
   ## General plots
   # Boxplots
-  output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
-  output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
+  output$cancerTypeBoxplot <-
+    renderPlotly(
+      get_generic_boxplot(
+        clinical_data,
+        clinical_data$cancer_type_detailed,
+        clinical_data$overall_survival_months,
+        title = "Survival in months by cancer type",
+        xaxis = "Cancer type",
+        yaxis = "Survival in months"
+      )
+    )
+  output$survivalBoxplot <-
+    renderPlotly(
+      get_generic_boxplot(
+        clinical_data,
+        clinical_data$death_from_cancer,
+        clinical_data$overall_survival_months,
+        title = "Survival in months by survival from cancer",
+        xaxis = "Death from cancer",
+        yaxis = "Survival in months"
+      )
+    )
+  output$ageBoxplot <-
+    renderPlotly(
+      get_generic_boxplot(
+        clinical_data,
+        clinical_data$death_from_cancer,
+        clinical_data$age_at_diagnosis,
+        title = "Age at diagnosis",
+        xaxis = "Death from cancer",
+        yaxis = "Age at diagnosis"
+      )
+    )
   output$tumorSizeBoxplot <-
     renderPlotly(
       get_generic_boxplot(

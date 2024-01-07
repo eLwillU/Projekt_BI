@@ -30,6 +30,7 @@ get_survival_by_cancertype_plot <- function(clinical_data) {
   )
 }
 
+# UNUSED
 get_death_from_cancer_with_avg_age <- function(clinical_data) {
   dfc_yes <- clinical_data %>%
     filter(death_from_cancer == "yes")
@@ -81,11 +82,23 @@ get_generic_boxplot <-
         data = clinical_data,
         x = ~ x,
         y = ~ y,
-        type = 'box'
+        type = 'box',
+        color =  ~ x,
+        colors = "Set2"
       ) %>% layout(
         title = title,
-        xaxis = list(title = xaxis),
-        yaxis = list(title = yaxis)
+        xaxis = list(
+          zerolinecolor = '#ffff',
+          zerolinewidth = 2,
+          gridcolor = 'ffff',
+          showticklabels = FALSE,
+          title = list(text = xaxis)
+        ),
+        yaxis = list(title = yaxis),
+        legend = list(
+          orientation = "h",
+          y = -0.3
+          )
       )
     
     return(fig)
@@ -115,10 +128,6 @@ get_generic_piechart <-
       )
     return(fig)
   }
-
-get_grouped_therapy_boxplot <- function(clinical_data) {
-  
-}
 
 get_tumor_size_plot <- function(clinical_data) {
   return(plot_ly(
