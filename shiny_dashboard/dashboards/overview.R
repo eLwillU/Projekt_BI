@@ -14,6 +14,7 @@ get_overview_ui <- function() {
                          ),
                          conditionalPanel(
                            condition = "input.showDendros == 'yes'",
+                           checkboxInput("input.dendro", "Show dendrograms", F),
                            box(plotOutput("heatmapDFC")),
                            box(plotOutput("heatmapNoDFC")),
                          ),
