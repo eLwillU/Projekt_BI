@@ -42,6 +42,32 @@ get_death_from_cancer_with_avg_age <- function(clinical_data){
 )
 }
 
+get_generic_boxplot <-
+  function(clinical_data,
+           x,
+           y,
+           title,
+           xaxis,
+           yaxis,
+           colors) {
+    fig <-
+      plot_ly(
+        data = clinical_data,
+        x = ~ x,
+        y = ~ y,
+        type = 'box',
+        color = ~ death_from_cancer
+      )
+    fig <-
+      fig %>% layout(
+        title = title,
+        xaxis = list(title = xaxis),
+        yaxis = list(title = yaxis)
+      )
+    
+    return(fig)
+  }
+
 get_generic_piechart <- function(clinical_data, labels, title, labelType = "label+percent") {
   fig <-
     plot_ly(
