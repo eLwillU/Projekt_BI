@@ -28,37 +28,40 @@ get_gene_df_rownames <- function() {
   return(gene_df_rownames)
 }
 
-get_gene_matrix <- function(all_data, gene_df_rownames) {
+get_gene_df <- function(all_data, gene_df_rownames) {
   # Filter the data by rownames
   filtered_gene_data <- all_data %>%
-    dplyr::select(all_of(gene_df_rownames))
-  
-  # Create gene_matrix
-  gene_matrix <- data.matrix(filtered_gene_data)
-  return(gene_matrix)
+    dplyr::select(all_of(gene_df_rownames), death_from_cancer)
+  return(filtered_gene_data)
 }
 
 
-get_static_heatmap <- function(gene_matrix, death_from_cancer = TRUE){
+get_static_heatmap <- function(gene_df, death_from_cancer = TRUE){
   if(death_from_cancer) {
-    gene_matrix <- gene_matrix %>% 
-      base::subset(gene_data[,"death_from_cancer"] == "yes")
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "yes") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
     fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Death from Cancer)")
     return(fig)
   } 
   else {
-    gene_matrix <- gene_matrix %>% 
-      base::subset(gene_data[,"death_from_cancer"] == "no")
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "no") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
     fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Survived Cancer)")
     return(fig)
   }
 }
 
-get_plotly_heatmap <- function(gene_matrix, death_from_cancer = TRUE){
+get_plotly_heatmap <- function(gene_df, death_from_cancer = TRUE){
   
   if(death_from_cancer) {
-    gene_matrix <- gene_matrix %>% 
-      base::subset(gene_data[,"death_from_cancer"] == "yes")
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "yes") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
     
     return(
       plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%
@@ -74,8 +77,10 @@ get_plotly_heatmap <- function(gene_matrix, death_from_cancer = TRUE){
   } 
   
   else {
-    gene_matrix <- gene_matrix %>% 
-      base::subset(gene_data[,"death_from_cancer"] == "no")
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "no") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
     
     return(
       plot_ly(x= colnames(gene_matrix), z = gene_matrix, type = "heatmap", colors="Oranges") %>%

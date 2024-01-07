@@ -58,13 +58,13 @@ get_overview_Server <- function(input, output){
   gene_data <- loadData("raw_gene_data_unbalanced.RDS")
   
   gene_df_rownames <- get_gene_df_rownames()
-  gene_matrix <- get_gene_matrix(all_data, gene_df_rownames)
+  gene_df <- get_gene_df(all_data, gene_df_rownames)
   
   # Heatmaps
-  output$heatmapDFC <- renderPlot({get_static_heatmap(gene_matrix, death_from_cancer = TRUE)})
-  output$plotlyHeatmapDFC <- renderPlotly({ get_plotly_heatmap(gene_matrix, death_from_cancer = TRUE)})
-  output$heatmapNoDFC <- renderPlot({get_static_heatmap(gene_matrix, death_from_cancer = FALSE)})
-  output$plotlyHeatmapNoDFC <- renderPlotly({ get_plotly_heatmap(gene_matrix, death_from_cancer = FALSE)})
+  output$heatmapDFC <- renderPlot({get_static_heatmap(gene_df, death_from_cancer = TRUE)})
+  output$plotlyHeatmapDFC <- renderPlotly({ get_plotly_heatmap(gene_df, death_from_cancer = TRUE)})
+  output$heatmapNoDFC <- renderPlot({get_static_heatmap(gene_df, death_from_cancer = FALSE)})
+  output$plotlyHeatmapNoDFC <- renderPlotly({ get_plotly_heatmap(gene_df, death_from_cancer = FALSE)})
   
   # General plots
   output$plot3 <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
@@ -77,6 +77,6 @@ get_overview_Server <- function(input, output){
   output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))
   output$pca2 <- renderPlot(get_pca_scree_clinical_numeric(clinical_data))
   output$pca3 <- renderPlot(get_pca_scree_all_gene(gene_data))
-  output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_matrix))
+  output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_df))
   return(output)
 }
