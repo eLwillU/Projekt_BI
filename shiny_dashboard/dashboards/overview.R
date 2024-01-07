@@ -10,18 +10,19 @@ get_overview_ui <- function() {
       "Select Plots to Show",
       inline = TRUE,
       choices = list("Boxplots" = "showBoxplots",
-                     "Piecharts" = "showPiecharts"),
+                     "Piecharts" = "showPiecharts",
+                     "Linecharts" = "showLinecharts"),
       selected = list("showBoxplots", "showPiecharts")
     ),
-    
+    # General
     tabsetPanel(
       type = "tabs",
       tabPanel(
         "General",
         fluidPage(
-          h1("General"),
           conditionalPanel(
             condition = "input.selectedPlots.includes('showBoxplots')",
+            h1("Boxplots"),
             box(plotlyOutput("cancerTypeBoxplot")),
             box(plotlyOutput("survivalBoxplot")),
             box(plotlyOutput("ageBoxplot")),
@@ -31,14 +32,24 @@ get_overview_ui <- function() {
           ),
           conditionalPanel(
             condition = "input.selectedPlots.includes('showPiecharts')",
+            h1("Piecharts"),
             box(plotlyOutput("cancerTypePiechart")),
             box(plotlyOutput("surgeryTypePiechart")),
             box(plotlyOutput("chemoPiechart")),
             box(plotlyOutput("hormonePiechart")),
+            box(plotlyOutput("radioPiechart")),
             box(plotlyOutput("cohortPiechart")),
           ),
+          conditionalPanel(
+            condition = "input.selectedPlots.includes('showLinecharts')",
+            h1("Linecharts"),
+            box(plotlyOutput("lymphnodesLinechart")),
+            box(plotlyOutput("mutationsLinechart")),
+            box(plotlyOutput("ageLinechart")),
+          )
         )
       ),
+      # Heatmaps
       tabPanel(
         "Heatmaps",
         fluidPage(
@@ -61,10 +72,10 @@ get_overview_ui <- function() {
             )),),
         )
       ),
+      # PCA plots
       tabPanel("PCA",
                fluidPage(
                  h1("PCA Analysis"),
-                 # PCA plots
                  box(plotOutput("pca1")),
                  box(plotOutput("pca2")),
                  box(plotOutput("pca3")),
@@ -152,6 +163,8 @@ get_overview_Server <- function(input, output) {
         yaxis = "Tumor size"
       )
     )
+  
+  
   # Piecharts
   output$cancerTypePiechart <-
     renderPlotly(
@@ -186,6 +199,10 @@ get_overview_Server <- function(input, output) {
         "Hormone-Therapy distribution"
       )
     )
+  output$radioPiechart <-
+    renderPlotly(
+      get_generic_piechart(clinical_data, labels = clinical_data$radio_therapy, "Radio Therapy Distribution")
+    )
   output$cohortPiechart <-
     renderPlotly(
       get_generic_piechart(clinical_data, labels = clinical_data$cohort, "Cohort Distribution")
@@ -210,11 +227,44 @@ get_overview_Server <- function(input, output) {
       get_plotly_heatmap(gene_df, death_from_cancer = FALSE)
     })
   
+  
   # PCA plots
   output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))
   output$pca2 <-
     renderPlot(get_pca_scree_clinical_numeric(clinical_data))
   output$pca3 <- renderPlot(get_pca_scree_all_gene(gene_data))
   output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_df))
+  
+  
+  # Linecharts
+  output$lymphnodesLinechart <- renderPlotly(
+    get_generic_linechart(
+      clinical_data,
+      clinical_data$overall_survival_months,
+      clinical_data$lymph_nodes_examined_positive,
+      "Impact of positive examined lymphnodes on survival in months",
+      "Survival in months",
+      "Lymphnodes examined positive"
+    )
+  )
+  output$mutationsLinechart <- renderPlotly(
+    get_generic_linechart(
+      clinical_data,
+      clinical_data$overall_survival_months,
+      clinical_data$mutation_count,
+      "Impact of mutations on survival in months",
+      "Survival in months",
+      "Amount of mutations"
+    )
+  )
+  output$ageLinechart <- renderPlotly(get_generic_linechart(
+    clinical_data,
+    clinical_data$overall_survival_months,
+    clinical_data$age_at_diagnosis,
+    "Impact of age on survival in months",
+    "Survival in months",
+    "Age at diagnosis"
+  ))
+  
   return(output)
 }

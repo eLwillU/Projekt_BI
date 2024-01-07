@@ -78,13 +78,26 @@ get_generic_boxplot <-
 
 get_generic_piechart <-
   function(clinical_data, labels, title, labelType = "label+percent") {
+    colors <-
+      c(
+        'rgb(102, 194, 165)',
+        'rgb(252, 141, 98)',
+        'rgb(141, 160, 203)',
+        'rgb(231, 138, 195)',
+        'rgb(166, 216, 84)',
+        'rgb(255, 217, 47)',
+        'rgb(229, 196, 148)',
+        'rgb(179, 179, 179)'
+      )
     fig <-
       plot_ly(
         data = clinical_data,
         labels = ~ labels,
         type = 'pie',
         textposition = 'inside',
-        textinfo = labelType
+        textinfo = labelType,
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1))
       ) %>% layout(
         title = title,
         xaxis = list(

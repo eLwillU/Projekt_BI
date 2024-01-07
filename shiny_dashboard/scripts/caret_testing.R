@@ -2,13 +2,62 @@ source("scripts/preprocessing.R")
 library(caret)
 library(e1071)
 library(dplyr)
+library(plotly)
 
 clinical_data <- get_raw_clinical_data(normalize_data = FALSE)
 
-clinical_data$overall_survival_months
+clinical_data$age_at_diagnosis
 
-fig <- plot_ly(clinical_data, x = ~cancer_type_detailed, y = ~overall_survival_months, type = "box") %>% layout(boxmode = "group")
+get_generic_linechart <- function(data, x, y, title, xlabel, ylabel) {
+  fig <-
+    plot_ly(data = clinical_data,
+            x = ~ x,
+            y = ~ y) %>% layout(
+              title = title,
+              xaxis = list(title = xlabel),
+              yaxis = list(title = ylabel)
+            )
+  
+  return(fig)
+}
+
+get_generic_linechart(
+  clinical_data,
+  clinical_data$overall_survival_months,
+  clinical_data$lymph_nodes_examined_positive,
+  "Impact of positive examined lymphnodes on survival in months",
+  "Survival in months",
+  "Lymphnodes examined positive"
+)
+
+get_generic_linechart(
+  clinical_data,
+  clinical_data$overall_survival_months,
+  clinical_data$mutation_count,
+  "Impact of mutations on survival in months",
+  "Survival in months",
+  "Amount of mutations"
+)
+
+get_generic_linechart(
+  clinical_data,
+  clinical_data$overall_survival_months,
+  clinical_data$age_at_diagnosis,
+  "Impact of age on survival in months",
+  "Survival in months",
+  "Age at diagnosis"
+)
+
+fig <- plot_ly(data = clinical_data, x = ~overall_survival_months, y = ~lymph_nodes_examined_positive)
 fig
+
+fig <- plot_ly(data = clinical_data, x = ~overall_survival_months, y = ~mutation_count)
+fig
+
+fig <- plot_ly(data = clinical_data, x = ~overall_survival_months, y = ~age_at_diagnosis)
+fig
+
+
 
 
 get_generic_piechart <- function(clinical_data, labels, title, labelType = "label+percent") {
