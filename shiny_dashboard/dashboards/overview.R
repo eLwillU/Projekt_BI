@@ -11,8 +11,13 @@ get_overview_ui <- function() {
                          h1("General"),
                          box(plotlyOutput("cancerTypeBoxplot")),
                          box(plotlyOutput("survivalBoxplot")),
+                         box(plotlyOutput("tumorSizeBoxplot")),
+                         
+                         box(plotlyOutput("cancerTypePiechart")),
+                         box(plotlyOutput("surgeryTypePiechart")),
+                         box(plotlyOutput("chemoPiechart")),
+                         box(plotlyOutput("hormonePiechart")),
                          box(plotlyOutput("cohortPiechart")),
-                         box(plotlyOutput("tumorSizeBoxplot"))
                        )
                      ),
                      tabPanel(
@@ -64,8 +69,13 @@ get_overview_Server <- function(input, output){
   # General plots
   output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
   output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
-  output$cohortPiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$cohort, "Cohort Distribution"))
   output$tumorSizeBoxplot <- renderPlotly(get_tumor_size_plot(clinical_data))
+  
+  output$cancerTypePiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$cancer_type_detailed, "Cancer Distribution", labelType = "percent"))
+  output$surgeryTypePiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$type_of_breast_surgery, "Surgery Distribution"))
+  output$chemoPiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$chemotherapy, "Chemotherapy Distribution"))
+  output$hormonePiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$hormone_therapy, "Hormone-Therapy Distribution"))
+  output$cohortPiechart <- renderPlotly(get_generic_piechart(clinical_data, labels=clinical_data$cohort, "Cohort Distribution"))
   
   # Heatmaps
   output$heatmapDFC <- renderPlot({get_static_heatmap(gene_df, death_from_cancer = TRUE)})
