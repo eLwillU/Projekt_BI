@@ -46,3 +46,10 @@ get_cohort_pie_chart <- function(clinical_data){
   return(plot_ly(data = clinical_data, labels=paste("Cohort ",clinical_data$cohort), values=~cohort, type="pie") %>%
            layout(title="Cohort-Size overview"))
 }
+
+get_tumor_size_plot <- function(clinical_data){
+  return(
+    plot_ly(data = clinical_data, type="box", x=~death_from_cancer, y=~tumor_size )
+    
+  )
+}

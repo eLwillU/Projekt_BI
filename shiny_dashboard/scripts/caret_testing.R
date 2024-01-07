@@ -1,22 +1,16 @@
 source("scripts/preprocessing.R")
-source("scripts/clustering.R")
 library(caret)
 library(e1071)
 library(dplyr)
 
-clinical_data <- get_raw_clinical_data(balance_data = FALSE)
-all_data <- get_raw_data(balance_data = FALSE)
-gene_data <- get_raw_gene_data(balance_data = FALSE)
+test0 <- get_raw_clinical_data(normalize_data = TRUE)
+numeric_df <- test0 %>% select_if(is.numeric)
+pca <- prcomp(numeric_df)
+summary(pca)
 
-gene_df_rownames <- get_gene_df_rownames()
-filtered_gene_data <- all_data %>%
-  dplyr::select(all_of(gene_df_rownames), death_from_cancer)
-
-# Create gene_matrix
-gene_matrix <- data.matrix(filtered_gene_data)
-
-test123 <- gene_matrix %>% 
-  base::subset(gene_matrix[,-"death_from_cancer"])
+test <- get_raw_gene_data() %>% select(-death_from_cancer)
+min(test)
+max(test)
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)

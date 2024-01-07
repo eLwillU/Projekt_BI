@@ -32,6 +32,7 @@ get_overview_ui <- function() {
                          box(plotlyOutput("cancerTypeBoxplot")),
                          box(plotlyOutput("survivalBoxplot")),
                          box(plotlyOutput("cohortPiechart")),
+                         box(plotlyOutput("tumorSizeBoxplot"))
                        )
                      ),
                      tabPanel(
@@ -69,6 +70,7 @@ get_overview_Server <- function(input, output){
   output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
   output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
   output$cohortPiechart <- renderPlotly(get_cohort_pie_chart(clinical_data))
+  output$tumorSizeBoxplot <- renderPlotly(get_tumor_size_plot(clinical_data))
   
   # PCA plots
   output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))
