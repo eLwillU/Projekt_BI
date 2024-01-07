@@ -166,8 +166,9 @@ get_pca_scree_all_gene <- function(gene_data){
 }
 
 # pca scree filtered gene data
-get_pca_scree_filtered_gene <- function(gene_matrix){
-  pca <- prcomp(gene_matrix, scale=F)
+get_pca_scree_filtered_gene <- function(gene_df){
+  gene_df <- gene_df %>% select_if(is.numeric)
+  pca <- prcomp(gene_df, scale=F)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
   p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene data")
