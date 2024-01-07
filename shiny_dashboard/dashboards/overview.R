@@ -29,10 +29,9 @@ get_overview_ui <- function() {
                        "General",
                        fluidPage(
                          h1("General"),
-                         box(plotlyOutput("plot3")),
-                         box(plotlyOutput("plot4")),
-                         box(plotlyOutput("plot5")),
-                         box(plotlyOutput("plot6")),
+                         box(plotlyOutput("cancerTypeBoxplot")),
+                         box(plotlyOutput("survivalBoxplot")),
+                         box(plotlyOutput("cohortPiechart")),
                        )
                      ),
                      tabPanel(
@@ -49,7 +48,7 @@ get_overview_ui <- function() {
                      
                      ))
 }
-## TODO: add plot 7
+
 get_overview_Server <- function(input, output){
   
   # prep data
@@ -67,11 +66,9 @@ get_overview_Server <- function(input, output){
   output$plotlyHeatmapNoDFC <- renderPlotly({ get_plotly_heatmap(gene_df, death_from_cancer = FALSE)})
   
   # General plots
-  output$plot3 <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
-  output$plot4 <- renderPlotly(get_survival_by_cancer_or_disease(clinical_data))
-  output$plot5 <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
-  output$plot6 <- renderPlotly(get_cohort_pie_chart(clinical_data))
-  output$plot7 <- renderPlotly(get_cohort_pie_chart(clinical_data))
+  output$cancerTypeBoxplot <- renderPlotly(get_survival_by_cancertype_plot(clinical_data))
+  output$survivalBoxplot <- renderPlotly(get_death_from_cancer_with_avg_age(clinical_data))
+  output$cohortPiechart <- renderPlotly(get_cohort_pie_chart(clinical_data))
   
   # PCA plots
   output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))

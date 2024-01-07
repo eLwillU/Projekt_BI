@@ -21,19 +21,6 @@ get_survival_by_cancertype_plot <- function(clinical_data){
                            y=-0.3)))
 }
 
-get_survival_by_cancer_or_disease <- function(clinical_data) {
-    return(
-      plot_ly(data = clinical_data, x=~death_from_cancer,y=~overall_survival_months, type="box") %>%
-      layout(title="Overall surivival Months comaring cancer or not",
-             xaxis = list(
-               title="Death from cancer"
-             ),
-             yaxis = list(
-               title="Overall survival Months"
-             )))
-}
-
-
 get_death_from_cancer_with_avg_age <- function(clinical_data){
   dfc_yes<- clinical_data %>%
     filter(death_from_cancer == "yes")
