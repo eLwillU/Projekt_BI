@@ -5,21 +5,21 @@ source("scripts/preprocessing.R")
 
 get_overview_ui <- function() {
   return(fluidPage(
-    checkboxGroupInput(
-      "selectedPlots",
-      "Select Plots to Show",
-      inline = TRUE,
-      choices = list("Boxplots" = "showBoxplots",
-                     "Piecharts" = "showPiecharts",
-                     "Linecharts" = "showLinecharts"),
-      selected = list("showBoxplots", "showPiecharts")
-    ),
     # General
     tabsetPanel(
       type = "tabs",
       tabPanel(
         "General",
         fluidPage(
+          checkboxGroupInput(
+            "selectedPlots",
+            "Select Plots to Show",
+            inline = TRUE,
+            choices = list("Boxplots" = "showBoxplots",
+                           "Piecharts" = "showPiecharts",
+                           "Linecharts" = "showLinecharts"),
+            selected = list("showBoxplots", "showPiecharts")
+          ),
           conditionalPanel(
             condition = "input.selectedPlots.includes('showBoxplots')",
             h1("Boxplots"),

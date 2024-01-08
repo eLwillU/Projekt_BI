@@ -6,6 +6,11 @@ library(plotly)
 
 clinical_data <- get_raw_clinical_data(normalize_data = FALSE)
 
+numeric_df <- clinical_data %>% select_if(is.numeric)
+?prcomp
+pca <- prcomp(numeric_df, center = TRUE, scale = TRUE)
+summary(pca)
+
 clinical_data$age_at_diagnosis
 
 ## get data
