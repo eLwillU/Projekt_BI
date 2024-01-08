@@ -83,6 +83,7 @@ get_overview_ui <- function() {
       tabPanel("PCA",
                fluidPage(
                  h1("PCA Analysis"),
+                 checkboxInput("scaleData", "Scale and Center data", value = FALSE),
                  box(plotOutput("pca1")),
                  box(plotOutput("pca2")),
                  box(plotOutput("pca3")),
@@ -246,11 +247,10 @@ get_overview_Server <- function(input, output) {
   
   
   # PCA plots
-  output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data))
-  output$pca2 <-
-    renderPlot(get_pca_scree_clinical_numeric(clinical_data))
-  output$pca3 <- renderPlot(get_pca_scree_all_gene(gene_data))
-  output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_df))
+  output$pca1 <- renderPlot(get_pca_scree_all_numeric(all_data, input$scaleData))
+  output$pca2 <-renderPlot(get_pca_scree_clinical_numeric(clinical_data, input$scaleData))
+  output$pca3 <- renderPlot(get_pca_scree_all_gene(gene_data, input$scaleData))
+  output$pca4 <- renderPlot(get_pca_scree_filtered_gene(gene_df, input$scaleData))
   
   
   # Linecharts

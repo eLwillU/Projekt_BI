@@ -162,7 +162,7 @@ get_pca_scree_all_numeric <- function(all_data, scale = FALSE){
   pca <- prcomp(numeric_df, center = scale, scale = scale)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  p<- fviz_eig(pca, addlabels=T, main = "PCA for all the data")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for all features")
   return(p)
 }
 
@@ -172,7 +172,7 @@ get_pca_scree_clinical_numeric <- function(clinical_data, scale = FALSE){
   pca <- prcomp(numeric_clinical_df, center = scale, scale = scale)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  p<- fviz_eig(pca, addlabels=T, main = "PCA for clinical data")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for clinical features")
   return(p)
 }
 
@@ -182,7 +182,7 @@ get_pca_scree_all_gene <- function(gene_data, scale = FALSE){
   pca <- prcomp(numeric_gene_df, center = scale, scale = scale)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  p<- fviz_eig(pca, addlabels=T, main = "PCA for all gene data")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for all gene features")
   return(p)
 }
 
@@ -192,6 +192,6 @@ get_pca_scree_filtered_gene <- function(gene_df, scale = FALSE){
   pca <- prcomp(gene_df, center = scale, scale = scale)
   pca.var <- pca$sdev^2
   pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
-  p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene data")
+  p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene features (with random forest gini)")
   return(p)
 }
