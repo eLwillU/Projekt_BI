@@ -280,8 +280,8 @@ get_clinical_prognosis_server <- function(input, output){
   clinical_logistic_model <- get_logistic_clinical_model_survival()
   output$logisticModelHeader <- renderUI({
     h2(paste("Logistic Model 
-               [Sensitivity = ", round(clinical_logistic_model$sensitivity, 1),
-             "Specificity = ", round(clinical_logistic_model$specificity, 1),
+               [Sensitivity = ", round(clinical_logistic_model$sensitivity, 2),
+             "Specificity = ", round(clinical_logistic_model$specificity, 2),
              "]"
     ))
   })
@@ -296,8 +296,8 @@ get_clinical_prognosis_server <- function(input, output){
   nb_model <- get_clinical_nb_model_survival()
   output$nbModelHeader <- renderUI({
     h2(paste("Naive Bayes Model 
-               [Sensitivity = ", round(nb_model$sensitivity, 1),
-             "Specificity = ", round(nb_model$specificity, 1),
+               [Sensitivity = ", round(nb_model$sensitivity, 2),
+             "Specificity = ", round(nb_model$specificity, 2),
              "]"
     ))
   })
@@ -319,8 +319,8 @@ get_clinical_prognosis_server <- function(input, output){
   tree_model <- get_clinical_dectree_model_survival()
   output$decisionTreeModelHeader <- renderUI({
     h2(paste("Decision Tree Model
-               [Sensitivity = ", round(tree_model$sensitivity, 1),
-             "Specificity = ", round(tree_model$specificity, 1),
+               [Sensitivity = ", round(tree_model$sensitivity, 2),
+             "Specificity = ", round(tree_model$specificity, 2),
              "]"
     ))
   })
@@ -341,8 +341,8 @@ get_clinical_prognosis_server <- function(input, output){
   rf_model <- get_clinical_rftree_model_survival()
   output$rfModelHeader <- renderUI({
     h2(paste("Random Forest Model
-               [Sensitivity = ", round(rf_model$sensitivity, 1),
-             "Specificity = ", round(rf_model$specificity, 1),
+               [Sensitivity = ", round(rf_model$sensitivity, 2),
+             "Specificity = ", round(rf_model$specificity, 2),
              "]"
     ))
   })

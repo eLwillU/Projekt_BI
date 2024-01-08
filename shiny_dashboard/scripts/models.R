@@ -124,11 +124,19 @@ train_clinical_rftree_model_survival <- function(df) {
   trainData <- df[trainIndex, ]
   testData <- df[-trainIndex, ]
   
+  ctrl = trainControl(method = "cv", number = 10, 
+                      verboseIter = TRUE)
+  
   # make and plot model
-  model <- train(death_from_cancer ~ ., data = trainData, method = "rf")
+  model <- train(death_from_cancer ~., 
+                 data = trainData,
+                 method = "rf",
+                 trControl = ctrl,
+                 metric='Accuracy'
+  )
   
   # validate model
-  predictions <- predict(model, testData, type = "raw")
+  predictions <- predict(model, testData)
   confMatrix <- confusionMatrix(predictions, testData$death_from_cancer)
   print(confMatrix)
   
