@@ -126,3 +126,11 @@ get_generic_linechart <- function(clinical_data, x, y, title, xlabel, ylabel) {
   
   return(fig)
 }
+
+get_generic_qqplot <- function(clinical_data, x, title) {
+  p <- ggplot(clinical_data, aes(sample=x)) +
+    geom_qq(color="#fec6b1") + geom_qq_line() +
+    labs(title = title, x = "Theoretical Quantiles", y = "Sample Quantiles")
+  
+  return(ggplotly(p))
+}

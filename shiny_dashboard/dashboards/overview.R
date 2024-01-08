@@ -89,7 +89,19 @@ get_overview_ui <- function() {
                  box(plotOutput("pca3")),
                  box(plotOutput("pca4")),
                )),
-      
+      # QQ-Plots
+      tabPanel("QQ-Plots",
+               fluidPage(
+                 h1("QQ-Plots (test for normal distribution)"),
+                 # clinical data
+                 box(plotlyOutput("age_at_diagnosisQQ")),
+                 box(plotlyOutput("lymph_nodes_examined_positiveQQ")),
+                 box(plotlyOutput("overall_survival_monthsQQ")),
+                 box(plotlyOutput("tumor_sizeQQ")),
+                 # genes
+                 box(plotlyOutput("brca1QQ")),
+                 box(plotlyOutput("hes6QQ")),
+               )),
     )
   ))
 }
@@ -281,6 +293,40 @@ get_overview_Server <- function(input, output) {
     "Impact of age on survival in months",
     "Survival in months",
     "Age at diagnosis"
+  ))
+  
+  # QQPLots
+  # clinical
+  output$age_at_diagnosisQQ <-renderPlotly(get_generic_qqplot(
+  numeric_df,
+  numeric_df$age_at_diagnosis,
+  "Age at diagnosis"
+  ))
+  output$lymph_nodes_examined_positiveQQ <-renderPlotly(get_generic_qqplot(
+    numeric_df,
+    numeric_df$lymph_nodes_examined_positive,
+    "Lymphnodes examined positive"
+  ))
+  output$overall_survival_monthsQQ <-renderPlotly(get_generic_qqplot(
+    numeric_df,
+    numeric_df$overall_survival_months,
+    "Survival in months"
+  ))
+  output$tumor_sizeQQ <-renderPlotly(get_generic_qqplot(
+    numeric_df,
+    numeric_df$tumor_size,
+    "Tumor size"
+  ))
+  # genes
+  output$brca1QQ <-renderPlotly(get_generic_qqplot(
+    gene_data,
+    gene_data$brca1,
+    "BRCA1 Gene"
+  ))
+  output$hes6QQ <-renderPlotly(get_generic_qqplot(
+    gene_data,
+    gene_data$hes6,
+    "HES6 Gene"
   ))
   
   return(output)

@@ -1,4 +1,5 @@
 source("scripts/preprocessing.R")
+source("scripts/plots.R")
 library(caret)
 library(e1071)
 library(dplyr)
@@ -7,11 +8,15 @@ library(plotly)
 clinical_data <- get_raw_clinical_data(normalize_data = FALSE)
 
 numeric_df <- clinical_data %>% select_if(is.numeric)
-?prcomp
-pca <- prcomp(numeric_df, center = TRUE, scale = TRUE)
-summary(pca)
 
-clinical_data$age_at_diagnosis
+get_generic_qqplot(numeric_df, numeric_df$age_at_diagnosis, "skajhd")
+
+numeric_df$age_at_diagnosis
+numeric_df$lymph_nodes_examined_positive
+numeric_df$mutation_count
+numeric_df$nottingham_prognostic_index
+numeric_df$overall_survival_months
+numeric_df$tumor_size
 
 ## get data
 df <- get_raw_clinical_data(balance_data = FALSE)
