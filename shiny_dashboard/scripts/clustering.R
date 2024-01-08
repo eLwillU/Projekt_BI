@@ -75,7 +75,6 @@ get_plotly_heatmap <- function(gene_df, death_from_cancer = TRUE){
         )
     )
   } 
-  
   else {
     gene_df <- gene_df %>% 
       dplyr::filter(death_from_cancer == "no") %>%
@@ -95,6 +94,28 @@ get_plotly_heatmap <- function(gene_df, death_from_cancer = TRUE){
     )
   }
 }
+
+get_static_heatmap_without_dendro <- function(gene_df, death_from_cancer = TRUE){
+  if(death_from_cancer) {
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "yes") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
+ 
+
+    fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Death from cancer)", Colv = NA, Rowv = NA)
+    return(fig)
+  } 
+  else {
+    gene_df <- gene_df %>% 
+      dplyr::filter(death_from_cancer == "no") %>%
+      select(-death_from_cancer)
+    gene_matrix <- as.matrix(gene_df)
+    fig <- heatmap(gene_matrix, xlab = "Genes", ylab= "Samples", main="Gene Heatmap (Survived Cancer)", Colv = NA, Rowv = NA)
+    return(fig)
+  }    
+}
+
 
 # UNUSED
 get_dfc_dendrogram <- function(all_data, gene_df_rownames, minGini = 4){

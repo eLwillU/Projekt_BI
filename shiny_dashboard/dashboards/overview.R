@@ -55,21 +55,28 @@ get_overview_ui <- function() {
         fluidPage(
           h1("Heatmaps"),
           selectInput("showDendros", "Show Dendrograms",
-                      c(yes = "yes", no = "no")),
+                      c("Yes" = "yes", "No" = "no")),
           conditionalPanel(
             condition = "input.showDendros == 'yes'",
-            checkboxInput("input.dendro", "Show dendrograms", F),
             box(plotOutput("heatmapDFC")),
             box(plotOutput("heatmapNoDFC")),
           ),
-          conditionalPanel(# TODO: Plots without dendrogram
+          conditionalPanel(
+            # TODO: Plots without dendrogram
             condition = "input.showDendros == 'no'",
             box(plotlyOutput(
               "plotlyHeatmapDFC"
             )),
             box(plotlyOutput(
               "plotlyHeatmapNoDFC"
+            )),
+            box(plotOutput(
+              "plotHeatmapNoDendroDFC"
+            )),
+            box(plotOutput(
+              "plotHeatmapNoDendro"
             )),),
+          
         )
       ),
       # PCA plots
@@ -226,6 +233,16 @@ get_overview_Server <- function(input, output) {
     renderPlotly({
       get_plotly_heatmap(gene_df, death_from_cancer = FALSE)
     })
+  
+  output$plotHeatmapNoDendroDFC <- 
+    renderPlot({
+      get_static_heatmap_without_dendro(gene_df,death_from_cancer = TRUE )
+      })
+  
+  output$plotHeatmapNoDendro <- 
+    renderPlot({
+      get_static_heatmap_without_dendro(gene_df,death_from_cancer = FALSE )
+      })
   
   
   # PCA plots
