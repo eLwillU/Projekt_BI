@@ -113,3 +113,16 @@ get_generic_piechart <-
       )
     return(fig)
   }
+
+get_generic_linechart <- function(clinical_data, x, y, title, xlabel, ylabel) {
+  fig <-
+    plot_ly(data = clinical_data,
+            x = ~ x,
+            y = ~ y) %>% layout(
+              title = title,
+              xaxis = list(title = xlabel),
+              yaxis = list(title = ylabel)
+            )
+  
+  return(fig)
+}
