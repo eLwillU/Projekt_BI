@@ -48,7 +48,10 @@ get_raw_data <- function(
   raw_data <- subset(raw_data, select = -oncotree_code) # redundant
   # TODO: maybe replace with median primary_tumor_laterality
   raw_data <- na.omit(raw_data) 
-  
+  # mutationsdaten entfernen da nicht brauchbar für uns
+  if(remove_mutations){
+    raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) 
+  }
   
   ## converting
   # make all character columns factors
@@ -115,7 +118,6 @@ get_raw_data <- function(
     raw_data <- subset(raw_data, select = -Class) # redundant
   }
   
-  
   ## select only uncorrelated features
   if(remove_highly_correlated) {
     raw_numeric <- raw_data %>% select_if(is.numeric)
@@ -124,11 +126,6 @@ get_raw_data <- function(
     raw_data <- raw_data[,-highlyCorDescr]
     print(paste("Removed ", length(highlyCorDescr), "Columns because correlation"))
   }
-  
-  if(remove_mutations){
-    raw_data <- raw_data %>% dplyr::select(-ends_with("mut")) 
-  }
-  
   
   ## normalize
   if(normalize_data) {
@@ -180,6 +177,54 @@ get_raw_gene_data <- function(
 
 ## TODO: Standardisierung / Normalisierung. Vielleicht unnötig?
 
+# plot missing values
+get_missing_plots <- function() {
+  library(ggplot2)
+  library(dplyr)
+  library(naniar)
+  
+  raw_data <- read.csv("data/METABRIC_RNA_Mutation.csv", sep = ",")
+  
+  ## fehlerhafte daten 
+  raw_data[raw_data == ""] <- NA
+  raw_data[raw_data == "UNDEF"] <- NA
+  raw_data$cancer_type_detailed[raw_data$cancer_type_detailed == "Breast"] <- NA
+  raw_data$oncotree_code[raw_data$oncotree_code == "BREAST"] <- NA
+  
+  ## original data
+  sum(is.na(raw_data)) # there are missing values, we should handle them
+  length(unique(raw_data$patient_id)) == nrow(raw_data) # there are no duplicate patients
+  missing_column <- sapply(raw_data, function(x) sum(is.na(x)) / length(x) * 100)
+  missing_column <- sort(missing_column, decreasing = TRUE)
+  missing_row <- apply(raw_data, 1, function(x) sum(is.na(x)) / length(x) * 100)
+  missing_row <- sort(missing_row, decreasing = TRUE)
+
+  last_col_index <- which(names(raw_data) == "death_from_cancer")
+  missing_df <- raw_data[,1:last_col_index]
+  p <- vis_miss(missing_df) + 
+    theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+  print(p)
+  
+  raw_data <- subset(raw_data, select = -tumor_stage) # high missing of 26%
+  raw_data <- subset(raw_data, select = -cancer_type) # all values are the same
+  raw_data <- subset(raw_data, select = -patient_id) # no use for us. No duplicate patients
+  raw_data <- subset(raw_data, select = -her2_status_measured_by_snp6) # redundant
+  raw_data <- subset(raw_data, select = -er_status_measured_by_ihc) # redundant
+  raw_data <- subset(raw_data, select = -overall_survival) # redundant
+  raw_data <- subset(raw_data, select = -X3.gene_classifier_subtype) # redundant
+  raw_data <- subset(raw_data, select = -oncotree_code) # redundant
+  
+  last_col_index <- which(names(raw_data) == "death_from_cancer")
+  missing_df <- raw_data[,1:last_col_index]
+  p <- vis_miss(missing_df) + 
+    theme(axis.text.x =  element_text(angle = 90))
+  print(p)
+  
+  # TODO: maybe replace with median primary_tumor_laterality
+  raw_data <- na.omit(raw_data) 
+}
 
 
 # Save Data

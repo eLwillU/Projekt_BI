@@ -6,7 +6,22 @@ library(e1071)
 library(dplyr)
 library(plotly)
 
+df <- get_raw_data(balance_data = FALSE)
 df <- get_raw_clinical_data(balance_data = FALSE)
+df <- get_raw_gene_data(balance_data = FALSE)
+
+#TODO: discuss how to handle outliers. If removed only 6 rows remain :D
+remove_outliers <- function(x, na.rm = TRUE) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  return(y)
+}
+df <- df %>% 
+  mutate(across(where(is.numeric), remove_outliers))
+df <- na.omit(df)
 
 train_clinical_rftree_model_survival(df)
 

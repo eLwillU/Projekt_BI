@@ -8,6 +8,8 @@ install.packages("rpart")
 install.packages("randomForest")
 install.packages("plotly")
 install.packages("ggplot2")
+install.packages("naniar")
+
 
 # do we need?
 install.packages("ggdendro")
