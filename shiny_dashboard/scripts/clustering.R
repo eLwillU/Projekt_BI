@@ -11,7 +11,7 @@ library(plotly)
 library(ggdendro)
 library(factoextra)
 
-get_gene_df_rownames <- function() {
+get_gene_df_rownames <- function(cutoff = 4) {
   # Random Forest for feature selection
   gene_randomForest_model <- get_gene_rf_model()
   gene_feature_importance <- importance(gene_randomForest_model)
@@ -19,10 +19,11 @@ get_gene_df_rownames <- function() {
   # Create Data Frame from mean decrease gini coefficents
   gene_df <- data.frame(col2 = gene_feature_importance)
   
+  # TODO: does not work anymore??
   # Get rownames of genes
   gene_df_rownames <- gene_df %>%
     arrange(desc(MeanDecreaseGini)) %>%
-    filter(MeanDecreaseGini > 4) %>%
+    filter(MeanDecreaseGini > cutoff) %>%
     rownames()
 
   return(gene_df_rownames)

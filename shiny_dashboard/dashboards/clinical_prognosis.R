@@ -1,6 +1,16 @@
 # Create UI outside for better code readability
 get_clinical_prognosis_ui <- function(){
   return(fluidPage(
+    tags$head(
+      tags$style(HTML("
+            .rounded-grey-box {
+                background-color: #c6d0e5;
+                border-radius: 15px;
+                padding: 10px;
+                margin: 10px;
+            }
+        "))
+    ),
     ## Patient Data inputs
     h1("Patient information"),
     fluidRow(
@@ -217,32 +227,44 @@ get_clinical_prognosis_ui <- function(){
     
     ## Display model predictions
     h1("Model predictions"),
-    
-    # logistic regression
-    fluidRow(column(12,
-                    uiOutput("logisticModelHeader")),
-             column(12,
-                    uiOutput("logisticModelOutput"))
-    ), 
-    # Naive Bayes
-    fluidRow(column(12,
-                    uiOutput("nbModelHeader")),
-             column(12,
-                    uiOutput("nbModelOutput"))
-    ),
-    # Decision Tree
-    fluidRow(column(12,
-                    uiOutput("decisionTreeModelHeader")),
-             column(12,
-                    uiOutput("decisionTreeModelOutput"))
-    ),
-    
-    # Decision Tree
-    fluidRow(column(12,
-                    uiOutput("rfModelHeader")),
-             column(12,
-                    uiOutput("rfModelOutput"))
-    ),
+    fluidRow(
+      # logistic regression
+      column(
+        6,
+        div(
+          class = "rounded-grey-box",
+          uiOutput("logisticModelHeader"),
+          uiOutput("logisticModelOutput")
+        ),
+      ), 
+      # Naive Bayes
+      column(
+        6,
+        div(
+          class = "rounded-grey-box",
+          uiOutput("nbModelHeader"),
+          uiOutput("nbModelOutput")
+        ),
+      ), 
+      # Decision Tree
+      column(
+        6,
+        div(
+          class = "rounded-grey-box",
+          uiOutput("decisionTreeModelHeader"),
+          uiOutput("decisionTreeModelOutput")
+        ),
+      ),
+      # Random Forest
+      column(
+        6,
+        div(
+          class = "rounded-grey-box",
+          uiOutput("rfModelHeader"),
+          uiOutput("rfModelOutput")
+        ),
+      )
+    )
   ))
 }
 

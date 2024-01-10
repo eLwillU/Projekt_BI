@@ -34,10 +34,12 @@ get_overview_ui <- function() {
             condition = "input.selectedPlots.includes('showPiecharts')",
             h1("Piecharts"),
             box(plotlyOutput("cancerTypePiechart")),
+            box(plotlyOutput("deathPiechart")),
             box(plotlyOutput("surgeryTypePiechart")),
             box(plotlyOutput("chemoPiechart")),
             box(plotlyOutput("hormonePiechart")),
             box(plotlyOutput("radioPiechart")),
+            box(plotlyOutput("menopausePiechart")),
             box(plotlyOutput("cohortPiechart")),
           ),
           conditionalPanel(
@@ -196,6 +198,15 @@ get_overview_Server <- function(input, output) {
         labelType = "percent"
       )
     )
+  output$deathPiechart <-
+    renderPlotly(
+      get_generic_piechart(
+        clinical_data,
+        labels = clinical_data$death_from_cancer,
+        "Death by cancer",
+        labelType = "percent"
+      )
+    )
   output$surgeryTypePiechart <-
     renderPlotly(
       get_generic_piechart(
@@ -223,6 +234,10 @@ get_overview_Server <- function(input, output) {
   output$radioPiechart <-
     renderPlotly(
       get_generic_piechart(clinical_data, labels = clinical_data$radio_therapy, "Radio Therapy Distribution")
+    )
+  output$menopausePiechart <-
+    renderPlotly(
+      get_generic_piechart(clinical_data, labels = clinical_data$inferred_menopausal_state, "Pre or Post Menopausal state")
     )
   output$cohortPiechart <-
     renderPlotly(

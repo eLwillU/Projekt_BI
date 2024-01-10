@@ -28,6 +28,9 @@ train_clinical_rftree_model_survival(df)
 
 ## automatic creation with caret train
 df <- get_raw_clinical_data(balance_data = FALSE)
+df <- get_raw_gene_data(balance_data = FALSE)
+df <- get_raw_data(balance_data = FALSE)
+
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
 df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
@@ -45,7 +48,6 @@ model <- train(death_from_cancer ~.,
                data = trainData,
                method = "rf",
                trControl = ctrl,
-               metric='Accuracy'
                )
 
 # model <- train(death_from_cancer ~ ., data = trainData, method = "naive_bayes")
