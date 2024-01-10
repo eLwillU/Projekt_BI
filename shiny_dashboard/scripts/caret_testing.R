@@ -31,6 +31,9 @@ df <- get_raw_clinical_data(balance_data = FALSE)
 df <- get_raw_gene_data(balance_data = FALSE)
 df <- get_raw_data(balance_data = FALSE)
 
+max(df$age_at_diagnosis)
+min(df$age_at_diagnosis)
+
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
 df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
