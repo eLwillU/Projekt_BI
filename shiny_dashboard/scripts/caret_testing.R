@@ -6,27 +6,41 @@ library(e1071)
 library(dplyr)
 library(plotly)
 
-df <- get_raw_data(balance_data = FALSE)
+### FEATURE SELECTION
+# clinical
 df <- get_raw_clinical_data(balance_data = FALSE)
+
+df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
+df <- subset(df, select = -cohort) # not useful
+df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
+last_col_index <- which(names(df) == "death_from_cancer")
+df_x <- df[,0:(last_col_index - 1)]
+df_y <- df[,last_col_index]
+
+control <- rfeControl(functions=rfFuncs, method="cv", number=2, verbose = TRUE)
+# run the RFE algorithm
+results <- rfe(df_x, df_y, rfeControl=control, sizes = c(1:19))
+# summarize the results
+print(results)
+
+
+# gene
 df <- get_raw_gene_data(balance_data = FALSE)
+last_col_index <- which(names(df) == "death_from_cancer")
+df_x <- df[,(last_col_index + 1 ): ncol(df)]
+df_y <- df[,1:last_col_index]
 
-#TODO: discuss how to handle outliers. If removed only 6 rows remain :D
-remove_outliers <- function(x, na.rm = TRUE) {
-  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm)
-  H <- 1.5 * IQR(x, na.rm = na.rm)
-  y <- x
-  y[x < (qnt[1] - H)] <- NA
-  y[x > (qnt[2] + H)] <- NA
-  return(y)
-}
-df <- df %>% 
-  mutate(across(where(is.numeric), remove_outliers))
-df <- na.omit(df)
-
-train_clinical_rftree_model_survival(df)
+control <- rfeControl(functions=rfFuncs, method="cv", number = 2, verbose = TRUE)
+# run the RFE algorithm
+results <- rfe(df_x, df_y, rfeControl=control, sizes = c(1:489))
+# summarize the results
+print(results)
 
 
-## automatic creation with caret train
+
+
+
+### IDK WHAT THIS IS
 df <- get_raw_clinical_data(balance_data = FALSE)
 df <- get_raw_gene_data(balance_data = FALSE)
 df <- get_raw_data(balance_data = FALSE)
