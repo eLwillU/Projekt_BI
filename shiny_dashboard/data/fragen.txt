@@ -1,23 +1,9 @@
-Columns:
-- Unterschied von er_status_measured_by_ihc und er_status
-The key difference is that "er_status_measured_by_ihc" explicitly states the method used for determining ER status, which is IHC. In contrast, "er_status" just indicates the status without specifying the method. The method used for determining ER status can influence the interpretation of results, as different techniques may have varying levels of sensitivity and specificity.
-
-- Unterschied von her2_status_measured_by_snp6 und her2_status
-The primary difference is in the methodology and the type of information each method provides. SNP6 array offers a detailed genetic perspective, potentially revealing complex genetic changes, whereas IHC and FISH are more focused on protein expression and gene amplification, respectively, and are standard in clinical diagnostics. The choice of method can influence the interpretation of HER2 status, which is critical for treatment decisions, as HER2-positive cancers may be treated with targeted therapies like trastuzumab (Herceptin).
-
-Ideen:
-- Dashboard wo arzt Daten hinzufügen kann und damit dann ein Modell zur Vorhersage dynamisch gemacht wird
-- Dashboard mit Überblick zu Daten
-- Dashboard mit Ganz vielen Inputs, mit der man direkt sehen kann was die Auswirkung auf das Überleben des Patienten hat
-
 TODO:
 - SCALE verändert PCA extrem. Wieso erklärung? AGE scheint grossen Einfluss zu haben
 - Kodierung ?!?
 - Dashboard um Daten kennenzulernen
- - Vergleiche von Krebstypen
- - Mix von krebstypen (nico)
- - Mix von Therapien (domi)
  - Outlier in boxplots
+ - Wieso wechseln farben ständig???
 - Dashboard für Prognose mit klinischen Daten
  - Feature Selection
  - LASSO

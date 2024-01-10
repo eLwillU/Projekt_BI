@@ -14,7 +14,7 @@ get_overview_ui <- function() {
           # input elements
           fluidRow(
             column(
-              6,
+              4,
               checkboxGroupInput(
                 "selectedPlots",
                 "Select Plots to Show",
@@ -28,13 +28,23 @@ get_overview_ui <- function() {
               ),
             ),
             column(
-              6,
+              4,
               sliderInput(
                 "ageRangeSlider",
                 "Age:",
                 min = 20,
                 max = 100,
                 value = c(20, 100)
+              ), 
+            ),
+            column(
+              4,
+              sliderInput(
+                "nottinghamIndexSlider",
+                "Nottingham Prognostic Index:",
+                min = 2,
+                max = 7,
+                value = c(2, 7)
               ), 
             )
           ),
@@ -143,7 +153,8 @@ get_overview_Server <- function(input, output) {
   # make reactive df
   reactive_clinical_data <- reactive({
     filtered_df <- clinical_data %>%
-      filter(age_at_diagnosis > input$ageRangeSlider[1], age_at_diagnosis < input$ageRangeSlider[2])
+      filter(age_at_diagnosis > input$ageRangeSlider[1], age_at_diagnosis < input$ageRangeSlider[2]) %>%
+      filter(nottingham_prognostic_index > input$nottinghamIndexSlider[1], nottingham_prognostic_index < input$nottinghamIndexSlider[2])
     return(filtered_df)
   })
 
@@ -281,8 +292,40 @@ get_overview_Server <- function(input, output) {
       get_generic_piechart(reactive_clinical_data(), labels = reactive_clinical_data()$cohort, "Cohort Distribution")
     )
   
+  # Linecharts
+  output$lymphnodesLinechart <- renderPlotly(
+    get_generic_linechart(
+      reactive_clinical_data(),
+      reactive_clinical_data()$overall_survival_months,
+      reactive_clinical_data()$lymph_nodes_examined_positive,
+      "Impact of positive examined lymphnodes on survival in months",
+      "Survival in months",
+      "Lymphnodes examined positive"
+    )
+  )
+  output$mutationsLinechart <- renderPlotly(
+    get_generic_linechart(
+      reactive_clinical_data(),
+      reactive_clinical_data()$overall_survival_months,
+      reactive_clinical_data()$mutation_count,
+      "Impact of mutations on survival in months",
+      "Survival in months",
+      "Amount of mutations"
+    )
+  )
+  output$ageLinechart <- renderPlotly(
+    get_generic_linechart(
+      reactive_clinical_data(),
+      reactive_clinical_data()$overall_survival_months,
+      reactive_clinical_data()$age_at_diagnosis,
+      "Impact of age on survival in months",
+      "Survival in months",
+      "Age at diagnosis"
+    )
+  )
   
-  # Heatmaps
+  
+  ## Heatmaps
   output$heatmapDFC <-
     renderPlot({
       get_static_heatmap(gene_df, death_from_cancer = TRUE)
@@ -311,7 +354,7 @@ get_overview_Server <- function(input, output) {
     })
   
   
-  # PCA plots
+  ## PCA plots
   output$pca1 <-
     renderPlot(get_pca_scree_all_numeric(all_data, input$scaleData))
   output$pca2 <-
@@ -320,39 +363,6 @@ get_overview_Server <- function(input, output) {
     renderPlot(get_pca_scree_all_gene(gene_data, input$scaleData))
   output$pca4 <-
     renderPlot(get_pca_scree_filtered_gene(gene_df, input$scaleData))
-  
-  
-  # Linecharts
-  output$lymphnodesLinechart <- renderPlotly(
-    get_generic_linechart(
-      clinical_data,
-      clinical_data$overall_survival_months,
-      clinical_data$lymph_nodes_examined_positive,
-      "Impact of positive examined lymphnodes on survival in months",
-      "Survival in months",
-      "Lymphnodes examined positive"
-    )
-  )
-  output$mutationsLinechart <- renderPlotly(
-    get_generic_linechart(
-      clinical_data,
-      clinical_data$overall_survival_months,
-      clinical_data$mutation_count,
-      "Impact of mutations on survival in months",
-      "Survival in months",
-      "Amount of mutations"
-    )
-  )
-  output$ageLinechart <- renderPlotly(
-    get_generic_linechart(
-      clinical_data,
-      clinical_data$overall_survival_months,
-      clinical_data$age_at_diagnosis,
-      "Impact of age on survival in months",
-      "Survival in months",
-      "Age at diagnosis"
-    )
-  )
   
   # QQPLots
   # clinical
