@@ -127,10 +127,26 @@ get_generic_linechart <- function(clinical_data, x, y, title, xlabel, ylabel) {
   return(fig)
 }
 
-get_generic_qqplot <- function(clinical_data, x, title) {
-  p <- ggplot(clinical_data, aes(sample=x)) +
-    geom_qq(color="#fec6b1") + geom_qq_line() +
-    labs(title = title, x = "Theoretical Quantiles", y = "Sample Quantiles")
+get_generic_qqplot <- function(clinical_data, x, title, histogram = TRUE) {
   
-  return(ggplotly(p))
+  if(histogram) {
+    p <-
+      plot_ly(
+        x = ~ x,
+        type = "histogram",
+        marker = list(
+          color = "#fec6b1",
+          line = list(color = "darkgray",
+                      width = 2)
+        )
+      ) %>%
+      layout(title = title)
+    return(p)
+  }
+  else {
+    p <- ggplot(clinical_data, aes(sample=x)) +
+      geom_qq(color="#fec6b1") + geom_qq_line() +
+      labs(title = title, x = "Theoretical Quantiles", y = "Sample Quantiles")
+    return(ggplotly(p))
+    }
 }

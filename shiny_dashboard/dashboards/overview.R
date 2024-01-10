@@ -93,6 +93,7 @@ get_overview_ui <- function() {
       tabPanel("QQ-Plots",
                fluidPage(
                  h1("QQ-Plots (test for normal distribution)"),
+                 checkboxInput("showHistograms", "Show Histograms", value = FALSE),
                  # clinical data
                  box(plotlyOutput("age_at_diagnosisQQ")),
                  box(plotlyOutput("lymph_nodes_examined_positiveQQ")),
@@ -298,35 +299,41 @@ get_overview_Server <- function(input, output) {
   # QQPLots
   # clinical
   output$age_at_diagnosisQQ <-renderPlotly(get_generic_qqplot(
-  numeric_df,
-  numeric_df$age_at_diagnosis,
-  "Age at diagnosis"
+    clinical_data,
+    clinical_data$age_at_diagnosis,
+  "Age at diagnosis",
+  histogram = input$showHistograms
   ))
   output$lymph_nodes_examined_positiveQQ <-renderPlotly(get_generic_qqplot(
-    numeric_df,
-    numeric_df$lymph_nodes_examined_positive,
-    "Lymphnodes examined positive"
+    clinical_data,
+    clinical_data$lymph_nodes_examined_positive,
+    "Lymphnodes examined positive",
+    histogram = input$showHistograms
   ))
   output$overall_survival_monthsQQ <-renderPlotly(get_generic_qqplot(
-    numeric_df,
-    numeric_df$overall_survival_months,
-    "Survival in months"
+    clinical_data,
+    clinical_data$overall_survival_months,
+    "Survival in months",
+    histogram = input$showHistograms
   ))
   output$tumor_sizeQQ <-renderPlotly(get_generic_qqplot(
-    numeric_df,
-    numeric_df$tumor_size,
-    "Tumor size"
+    clinical_data,
+    clinical_data$tumor_size,
+    "Tumor size",
+    histogram = input$showHistograms
   ))
   # genes
   output$brca1QQ <-renderPlotly(get_generic_qqplot(
     gene_data,
     gene_data$brca1,
-    "BRCA1 Gene"
+    "BRCA1 Gene",
+    histogram = input$showHistograms
   ))
   output$hes6QQ <-renderPlotly(get_generic_qqplot(
     gene_data,
     gene_data$hes6,
-    "HES6 Gene"
+    "HES6 Gene",
+    histogram = input$showHistograms
   ))
   
   return(output)
