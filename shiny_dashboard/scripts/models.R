@@ -4,7 +4,8 @@ save_model <- function(name, confMatrix, model) {
     specificity = confMatrix$byClass["Specificity"],
     balanced_accuracy = confMatrix$byClass["Balanced Accuracy"],
     kappa = confMatrix$byClass["kappa"],
-    model = model
+    model = model,
+    confMatrix = confMatrix
   )
   
   saveRDS(model_list, file = paste0("models/", "", name))
