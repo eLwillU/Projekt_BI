@@ -116,7 +116,7 @@ get_generic_piechart <-
 
 get_generic_linechart <- function(clinical_data, x, y, title, xlabel, ylabel) {
   fig <-
-    plot_ly(data = clinical_data,
+    plot_ly(data = clinical_data, type = 'scatter', mode = 'markers',
             x = ~x,
             y = ~y) %>% layout(
               title = title,
