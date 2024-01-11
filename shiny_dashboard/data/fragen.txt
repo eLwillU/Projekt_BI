@@ -1,9 +1,0 @@
-TODO:
-- SCALE verändert PCA extrem. Wieso erklärung? AGE scheint grossen Einfluss zu haben
-- Kodierung ?!?
-- Dashboard um Daten kennenzulernen
- - Outlier in boxplots
- - Wieso wechseln farben ständig???
-- Dashboard für Prognose mit klinischen Daten
- - Feature Selection
- - LASSO

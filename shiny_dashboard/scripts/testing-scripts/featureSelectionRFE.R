@@ -5,14 +5,16 @@ library(e1071)
 library(dplyr)
 library(plotly)
 
+
+
+
 ### FEATURE SELECTION
 # clinical
-df <- get_raw_clinical_data(balance_data = TRUE)
+df <- get_raw_clinical_data(balance_data = FALSE)
 
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
 df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
-df <- subset(df, select = -nottingham_prognostic_index) # gene data (not in this dataset)
 last_col_index <- which(names(df) == "death_from_cancer")
 df_x <- df %>% select(-death_from_cancer)
 df_y <- df[,last_col_index]
@@ -31,7 +33,7 @@ ctrl = trainControl(method = "cv", number = 2,
                     verboseIter = TRUE)
 model <- train(death_from_cancer ~., 
                data = trainData,
-               method = "rf",
+               method = "naive_bayes",
                trControl = ctrl,
                metric='Accuracy'
 )
