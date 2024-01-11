@@ -13,64 +13,53 @@ df <- get_raw_clinical_data(balance_data = FALSE)
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
 df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
+df <- subset(df, select = -nottingham_prognostic_index) # gene data (not in this dataset)
 last_col_index <- which(names(df) == "death_from_cancer")
 df_x <- df[,0:(last_col_index - 1)]
 df_y <- df[,last_col_index]
 
-control <- rfeControl(functions=rfFuncs, method="cv", number=2, verbose = TRUE)
-# run the RFE algorithm
+control <- rfeControl(functions=nbFuncs, method="cv", number=2, verbose = TRUE)
 results <- rfe(df_x, df_y, rfeControl=control, sizes = c(1:19))
-# summarize the results
 print(results)
+print(results$optVariables)
 
-
-# gene
-df <- get_raw_gene_data(balance_data = FALSE)
-last_col_index <- which(names(df) == "death_from_cancer")
-df_x <- df[,(last_col_index + 1 ): ncol(df)]
-df_y <- df[,1:last_col_index]
-
-control <- rfeControl(functions=rfFuncs, method="cv", number = 2, verbose = TRUE)
-# run the RFE algorithm
-results <- rfe(df_x, df_y, rfeControl=control, sizes = c(1:489))
-# summarize the results
-print(results)
-
-
-
-
-
-### IDK WHAT THIS IS
-df <- get_raw_clinical_data(balance_data = FALSE)
-df <- get_raw_gene_data(balance_data = FALSE)
-df <- get_raw_data(balance_data = FALSE)
-
-max(df$nottingham_prognostic_index)
-min(df$nottingham_prognostic_index)
-
-df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
-df <- subset(df, select = -cohort) # not useful
-df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
-trainIndex <- createDataPartition(df$death_from_cancer, p = .8, list = FALSE, times = 1)
-
-trainData <- df[trainIndex, ]
-testData <- df[-trainIndex, ]
-
-#Create model
-
-ctrl = trainControl(method = "cv", number = 10, 
+filtered_df <- df %>% select(results$optVariables) %>% mutate(death_from_cancer = df$death_from_cancer)
+trainIndex <- createDataPartition(filtered_df$death_from_cancer, p = .8, list = FALSE, times = 1)
+trainData <- filtered_df[trainIndex, ]
+testData <- filtered_df[-trainIndex, ]
+ctrl = trainControl(method = "cv", number = 2, 
                     verboseIter = TRUE)
-
 model <- train(death_from_cancer ~., 
                data = trainData,
-               method = "rf",
+               method = "glmnet",
                trControl = ctrl,
-               )
-
-# model <- train(death_from_cancer ~ ., data = trainData, method = "naive_bayes")
-summary(model)
-
+               metric='Accuracy'
+)
 predictions <- predict(model, testData)
 confMatrix <- confusionMatrix(predictions, testData$death_from_cancer)
 print(confMatrix)
+
+
+
+
+### CLUSTERING
+df <- get_raw_clinical_data(balance_data = FALSE)
+#df <- get_raw_gene_data(balance_data = FALSE)
+#df <- get_raw_data(balance_data = FALSE)
+
+df <- subset(df, select = -cohort) # not useful
+df <- subset(df, select = -integrative_cluster) # gene data (not in this dataset)
+numeric <- df %>% select(where(is.numeric))
+
+cl <- kmeans(numeric, 2)
+numeric <- numeric %>% mutate(cluster = cl$cluster, death_from_cancer = df$death_from_cancer)
+
+numeric %>% group_by(cluster) %>% summarise(
+  survival_months = mean(overall_survival_months),
+  tumor_size = mean(tumor_size),
+  lymph_nodes_examined_positive = mean(lymph_nodes_examined_positive)
+  )
+
+plot(numeric, col = cl$cluster)
+
 
