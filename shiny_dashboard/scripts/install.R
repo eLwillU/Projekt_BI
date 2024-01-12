@@ -9,6 +9,7 @@ install.packages("randomForest")
 install.packages("plotly")
 install.packages("ggplot2")
 install.packages("naniar")
+install.packages("gplots")
 
 
 # do we need?

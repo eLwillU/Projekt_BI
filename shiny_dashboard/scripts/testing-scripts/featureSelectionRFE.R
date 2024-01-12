@@ -10,7 +10,7 @@ library(plotly)
 
 ### FEATURE SELECTION
 # clinical
-df <- get_raw_clinical_data(balance_data = FALSE)
+df <- get_raw_clinical_data(balance_data = TRUE)
 
 df <- subset(df, select = -overall_survival_months) # same as death_from_cancer
 df <- subset(df, select = -cohort) # not useful
@@ -24,6 +24,7 @@ results <- rfe(df_x, df_y, rfeControl=control, sizes = c(1:ncol(df_x)))
 print(results)
 print(results$optVariables)
 
+filtered_df <- df
 filtered_df <- df %>% select(results$optVariables) %>% mutate(death_from_cancer = df$death_from_cancer)
 trainIndex <- createDataPartition(filtered_df$death_from_cancer, p = .8, list = FALSE, times = 1)
 trainData <- filtered_df[trainIndex, ]
@@ -33,7 +34,7 @@ ctrl = trainControl(method = "cv", number = 2,
                     verboseIter = TRUE)
 model <- train(death_from_cancer ~., 
                data = trainData,
-               method = "naive_bayes",
+               method = "rf",
                trControl = ctrl,
                metric='Accuracy'
 )
