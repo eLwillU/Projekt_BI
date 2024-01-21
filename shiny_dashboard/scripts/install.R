@@ -11,6 +11,7 @@ install.packages("plotly")
 install.packages("ggplot2")
 install.packages("naniar")
 install.packages("gplots")
+install.packages("DT")
 
 
 # do we need?

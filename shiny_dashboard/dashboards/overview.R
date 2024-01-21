@@ -35,7 +35,7 @@ get_overview_ui <- function() {
                 min = 20,
                 max = 100,
                 value = c(20, 100)
-              ), 
+              ),
             ),
             column(
               4,
@@ -45,7 +45,7 @@ get_overview_ui <- function() {
                 min = 2,
                 max = 7,
                 value = c(2, 7)
-              ), 
+              ),
             )
           ),
           
@@ -96,7 +96,7 @@ get_overview_ui <- function() {
                       c("Yes" = "yes", "No" = "no")),
           conditionalPanel(condition = "input.showDendros == 'yes'",
                            box(plotOutput("heatmapDFC")),
-                           box(plotOutput("heatmapNoDFC")),),
+                           box(plotOutput("heatmapNoDFC")), ),
           conditionalPanel(
             # TODO: Plots without dendrogram
             condition = "input.showDendros == 'no'",
@@ -153,11 +153,17 @@ get_overview_Server <- function(input, output) {
   # make reactive df
   reactive_clinical_data <- reactive({
     filtered_df <- clinical_data %>%
-      filter(age_at_diagnosis > input$ageRangeSlider[1], age_at_diagnosis < input$ageRangeSlider[2]) %>%
-      filter(nottingham_prognostic_index > input$nottinghamIndexSlider[1], nottingham_prognostic_index < input$nottinghamIndexSlider[2])
+      filter(
+        age_at_diagnosis > input$ageRangeSlider[1],
+        age_at_diagnosis < input$ageRangeSlider[2]
+      ) %>%
+      filter(
+        nottingham_prognostic_index > input$nottinghamIndexSlider[1],
+        nottingham_prognostic_index < input$nottinghamIndexSlider[2]
+      )
     return(filtered_df)
   })
-
+  
   ## General plots
   # Boxplots
   output$cancerTypeBoxplot <-
@@ -289,7 +295,11 @@ get_overview_Server <- function(input, output) {
     )
   output$cohortPiechart <-
     renderPlotly(
-      get_generic_piechart(reactive_clinical_data(), labels = reactive_clinical_data()$cohort, "Cohort Distribution")
+      get_generic_piechart(
+        reactive_clinical_data(),
+        labels = reactive_clinical_data()$cohort,
+        "Cohort Distribution"
+      )
     )
   
   # Linecharts
