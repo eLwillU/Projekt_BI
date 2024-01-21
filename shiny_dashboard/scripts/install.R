@@ -12,6 +12,7 @@ install.packages("ggplot2")
 install.packages("naniar")
 install.packages("gplots")
 install.packages("DT")
+install.packages(c("FactoMineR", "factoextra"))
 
 
 # do we need?

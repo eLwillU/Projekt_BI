@@ -120,6 +120,13 @@ get_overview_ui <- function() {
                  box(plotOutput("pca3")),
                  box(plotOutput("pca4")),
                )),
+      ### MCA plots
+      tabPanel("MCA",
+               fluidPage(
+                 h1("MCA Analysis"),
+                 checkboxInput("scaleDataMCA", "Scale and Center data", value = FALSE),
+                 box(width = 12, plotOutput("mca1")),
+               )),
       
       
       ### QQ-Plots
@@ -373,6 +380,11 @@ get_overview_Server <- function(input, output) {
     renderPlot(get_pca_scree_all_gene(gene_data, input$scaleData))
   output$pca4 <-
     renderPlot(get_pca_scree_filtered_gene(gene_df, input$scaleData))
+  
+  
+  #MCA plots
+  output$mca1 <-
+    renderPlot(get_mca_scree_all_data(input$scaleDataMCA))
   
   # QQPLots
   # clinical

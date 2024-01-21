@@ -17,11 +17,14 @@ get_clinical_prognosis_ui <- function() {
       type = "tabs",
       tabPanel(
         "Prediction",
-        h1("Patient-Data prognosis Dashboard"),
+        h1("Prognosis Dashboard"),
+        p(
+          "All clinical features from the dataset can be used to get a prediction if the patient survived. Four different models were trained. The percentage number does not have the same meaning for every model and is mainly visible to see the impact of changing the values. Genetic data was ignored because it introduced too many features"
+        ),
         ## Patient Data inputs
         fluidRow(
           box(
-            title = "Patient",
+            title = "Patient inputs",
             width = 12,
             collapsible = T,
             collapsed = F,
@@ -43,7 +46,7 @@ get_clinical_prognosis_ui <- function() {
             )
           ),
           box(
-            title = "Intervention",
+            title = "Intervention inputs",
             width = 12,
             collapsible = T,
             collapsed = F,
@@ -93,7 +96,7 @@ get_clinical_prognosis_ui <- function() {
             )
           ),
           box(
-            title = "Cancer (simple)",
+            title = "Simple cancer inputs",
             width = 12,
             collapsible = T,
             collapsed = T,
@@ -157,7 +160,7 @@ get_clinical_prognosis_ui <- function() {
             )
           ),
           box(
-            title = "Cancer (detailed)",
+            title = "Detailed cancer inputs",
             width = 12,
             collapsible = T,
             collapsed = T,
@@ -266,56 +269,78 @@ get_clinical_prognosis_ui <- function() {
                  div(
                    class = "rounded-grey-box",
                    uiOutput("logisticModelHeader"),
-                   uiOutput("logisticModelOutput")
+                   uiOutput("logisticModelOutput"),
+                   p(
+                     "Logistic model trained on a subset of the data. Features were selected with forward / backward selection"
+                   )
                  ), ),
           # Naive Bayes
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("nbModelHeader"),
-                   uiOutput("nbModelOutput")
+                   uiOutput("nbModelOutput"),
+                   p(
+                     "Naive Bayes model trained on a subset of the data. Features were selected with the caret package and Recursive Feature Elimination (RFE)"
+                   )
                  ), ),
           # Decision Tree
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("decisionTreeModelHeader"),
-                   uiOutput("decisionTreeModelOutput")
+                   uiOutput("decisionTreeModelOutput"),
+                   p(
+                     "Decision Tree Model with all data included. Feature selection is done by the model itself"
+                   )
                  ), ),
           # Random Forest
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("rfModelHeader"),
-                   uiOutput("rfModelOutput")
+                   uiOutput("rfModelOutput"),
+                   p(
+                     "Random Forest Model with all data included. Feature selection is done by the model itself"
+                   )
                  ), )
         )
       ),
-      tabPanel("Model Plots",
-               h1("Plots to showcase the created models"),
-               box(
-                 title = "Decision Tree plots (reduced features by cp=0.0075935)",
-                 width = 12,
-                 collapsible = T,
-                 collapsed = F,
-                 fluidRow(
-                   column(12,
-                     plotOutput("dectreePlot1"),
-                   ),
-                   column(12,
-                     plotOutput("dectreePlot2"),
-                   )
-                 )
-               ),
-               
-               box(
-                 title = "Random Forest plots",
-                 width = 12,
-                 collapsible = T,
-                 collapsed = F,
-                 plotOutput("rfClinicalPlot"),
-               ),
-               )
+      tabPanel(
+        "Model Plots",
+        h1("Plots to showcase the created models"),
+        box(
+          title = "Decision Tree plots",
+          width = 12,
+          collapsible = T,
+          collapsed = F,
+          fluidRow(
+            column(
+              12,
+              p(
+                "Showcase of feature importance and the decision tree itself. For visual reasons the decision tree plots features were reduced. Only features with a cp value of 0.007 or better were used"
+              )
+            ),
+            column(12,
+                   plotOutput("dectreePlot1"), ),
+            column(12,
+                   plotOutput("dectreePlot2"), )
+          )
+        ),
+        box(
+          title = "Random Forest plots",
+          width = 12,
+          collapsible = T,
+          collapsed = F,
+          fluidRow(column(
+            12,
+            p("Shows the feature importance of the random forest model.")
+          ),),
+          column(12,
+                 plotOutput("rfClinicalPlot"))
+        )
+        
+      )
     ),
   ))
 }
@@ -484,7 +509,7 @@ get_clinical_prognosis_server <- function(input, output) {
     h3(output)
   })
   
-    # Plots
+  # Plots
   
   library(rpart)
   library(rpart.plot)
@@ -493,8 +518,8 @@ get_clinical_prognosis_server <- function(input, output) {
   })
   
   output$dectreePlot2 <- renderPlot({
-    pruned_tree <- prune(tree_model$model, cp=0.0075935)
-    plot2 <- prp(pruned_tree, roundint=FALSE)
+    pruned_tree <- prune(tree_model$model, cp = 0.0075935)
+    plot2 <- prp(pruned_tree, roundint = FALSE)
   })
   
   output$rfClinicalPlot <-

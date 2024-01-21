@@ -196,3 +196,17 @@ get_pca_scree_filtered_gene <- function(gene_df, scale = FALSE){
   p<- fviz_eig(pca, addlabels=T, main = "PCA for filtered gene features (with random forest gini)")
   return(p)
 }
+
+# MCA for clinical, non numeric data
+get_mca_scree_all_data <- function(scale){
+  
+  library("FactoMineR")
+  library("factoextra")
+  library("dplyr")
+  
+  data <- get_raw_clinical_data(normalize_data = scale)
+  data_non_numeric <- data %>% select_if(~!is.numeric(.))
+  res.mca <- MCA(data_non_numeric, graph = FALSE)
+  p <- fviz_eig(res.mca, addlabels=T, main = "PCA for filtered gene features (with random forest gini)")
+  return(p)
+}
