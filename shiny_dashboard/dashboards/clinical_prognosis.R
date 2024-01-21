@@ -17,223 +17,246 @@ get_clinical_prognosis_ui <- function() {
       type = "tabs",
       tabPanel(
         "Prediction",
+        h1("Patient-Data prognosis Dashboard"),
         ## Patient Data inputs
-        h1("Patient information"),
         fluidRow(
-          # Age at diagnosis
-          column(4,
-                 numericInput("ageInput",
-                              h3("Patient Age"),
-                              value = 65)),
-          # Type of surgery
-          column(
-            4,
-            selectInput(
-              "surgerytypeInput",
-              h3("Type of surgery"),
-              choices = list("BREAST CONSERVING" = "BREAST CONSERVING",
-                             "MASTECTOMY" = "MASTECTOMY"),
-              selected = "MASTECTOMY"
+          box(
+            title = "Patient",
+            width = 12,
+            collapsible = T,
+            collapsed = F,
+            # Age at diagnosis
+            column(4,
+                   numericInput("ageInput",
+                                h3("Patient Age"),
+                                value = 65)),
+            # Inferred Menopausal State
+            column(
+              4,
+              selectInput(
+                "menopausalstateInput",
+                h3("Inferred Menopausal State"),
+                choices = list("Pre" = "Pre",
+                               "Post" = "Post"),
+                selected = "Post"
+              )
             )
           ),
-          # Cancer Type
-          column(
-            4,
-            selectInput(
-              "cancertypeInput",
-              h3("Cancer Type"),
-              choices = list(
-                "Breast Invasive Ductal Carcinoma" = "Breast Invasive Ductal Carcinoma",
-                "Breast Invasive Lobular Carcinoma" = "Breast Invasive Lobular Carcinoma",
-                "Breast Invasive Mixed Mucinous Carcinoma" = "Breast Invasive Mixed Mucinous Carcinoma",
-                "Breast Mixed Ductal and Lobular Carcinoma" = "Breast Mixed Ductal and Lobular Carcinoma"
-              ),
-              selected = "Breast Invasive Ductal Carcinoma"
+          box(
+            title = "Intervention",
+            width = 12,
+            collapsible = T,
+            collapsed = F,
+            # Type of surgery
+            column(
+              4,
+              selectInput(
+                "surgerytypeInput",
+                h3("Type of surgery"),
+                choices = list("BREAST CONSERVING" = "BREAST CONSERVING",
+                               "MASTECTOMY" = "MASTECTOMY"),
+                selected = "MASTECTOMY"
+              )
+            ),
+            # chemotherapy
+            column(
+              4,
+              selectInput(
+                "chemotherapyInput",
+                h3("Chemotherapy"),
+                choices = list("yes" = "yes",
+                               "no" = "no"),
+                selected = "no"
+              )
+            ),
+            # Hormone Therapy
+            column(
+              4,
+              selectInput(
+                "hormoneInput",
+                h3("Hormone Therapy"),
+                choices = list("no" = "no",
+                               "yes" = "yes"),
+                selected = "no"
+              )
+            ),
+            # Radio Therapy
+            column(
+              4,
+              selectInput(
+                "radiotherapyInput",
+                h3("Radio Therapy"),
+                choices = list("no" = "no",
+                               "yes" = "yes"),
+                selected = "no"
+              )
             )
           ),
-          # cellularity
-          column(
-            4,
-            selectInput(
-              "cellularityInput",
-              h3("Cellularity"),
-              choices = list(
-                "Low" = "Low",
-                "Moderate" = "Moderate",
-                "High" = "High"
-              ),
-              selected = "Moderate"
+          box(
+            title = "Cancer (simple)",
+            width = 12,
+            collapsible = T,
+            collapsed = T,
+            # Cancer Type
+            column(
+              4,
+              selectInput(
+                "cancertypeInput",
+                h3("Cancer Type"),
+                choices = list(
+                  "Breast Invasive Ductal Carcinoma" = "Breast Invasive Ductal Carcinoma",
+                  "Breast Invasive Lobular Carcinoma" = "Breast Invasive Lobular Carcinoma",
+                  "Breast Invasive Mixed Mucinous Carcinoma" = "Breast Invasive Mixed Mucinous Carcinoma",
+                  "Breast Mixed Ductal and Lobular Carcinoma" = "Breast Mixed Ductal and Lobular Carcinoma"
+                ),
+                selected = "Breast Invasive Ductal Carcinoma"
+              )
+            ),
+            # Primary Tumor Laterality
+            column(
+              4,
+              selectInput(
+                "lateralityInput",
+                h3("Primary Tumor Laterality"),
+                choices = list("Left" = "Left",
+                               "Right" = "Right"),
+                selected = "Left"
+              )
+            ),
+            # Lymphnodes
+            column(4,
+                   numericInput(
+                     "lymphnodesInput",
+                     h3("Lymphnodes"),
+                     value = 2
+                   )),
+            # Mutation Count
+            column(4,
+                   numericInput(
+                     "mutationcountInput",
+                     h3("Mutation Count"),
+                     value = 5
+                   )),
+            # Nottingham Prognostic Index
+            column(4,
+                   numericInput(
+                     "nottinghamInput",
+                     h3("Nottingham Index"),
+                     value = 4
+                   )),
+            # Tumor Size
+            column(
+              4,
+              sliderInput(
+                "tumorsizeInput",
+                h3("Tumor Size"),
+                min = 0,
+                max = 200,
+                value = 23
+              )
             )
           ),
-          # chemotherapy
-          column(
-            4,
-            selectInput(
-              "chemotherapyInput",
-              h3("Chemotherapy"),
-              choices = list("yes" = "yes",
-                             "no" = "no"),
-              selected = "yes"
-            )
-          ),
-          # pam50
-          column(
-            4,
-            selectInput(
-              "pam50Input",
-              h3("PAM50 Test"),
-              choices = list(
-                "Basal" = "Basal",
-                "claudin-low" = "claudin-low",
-                "Her2" = "Her2",
-                "LumA" = "LumA",
-                "LumB" = "LumB",
-                "NC" = "NC",
-                "Normal" = "Normal"
-              ),
-              selected = "Basal"
-            )
-          ),
-          # ER Status
-          column(
-            4,
-            selectInput(
-              "erInput",
-              h3("ER Status"),
-              choices = list("Negative" = "Negative",
-                             "Positive" = "Positive"),
-              selected = "Negative"
-            )
-          ),
-          # Neoplasm Histologic Grade
-          column(
-            4,
-            selectInput(
-              "neoplasmInput",
-              h3("Neoplasm Histologic Grade"),
-              choices = list("1" = 1,
-                             "2" = 2,
-                             "3" = 3),
-              selected = 2
-            )
-          ),
-          # HER2 Status
-          column(
-            4,
-            selectInput(
-              "her2Input",
-              h3("HER2"),
-              choices = list("Negative" = "Negative",
-                             "Positive" = "Positive"),
-              selected = "Negative"
-            )
-          ),
-          # Histologic Subtype
-          column(
-            4,
-            selectInput(
-              "histologicsubtypeInput",
-              h3("Histologic Subtype"),
-              choices = list(
-                "Ductal/NST" = "Ductal/NST",
-                "Lobular" = "Lobular",
-                "Medullary" = "Medullary",
-                "Mixed" = "Mixed",
-                "Mucinous" = "Mucinous",
-                "Tubular/ cribriform" = "Tubular/ cribriform"
-              ),
-              selected = "Mixed"
-            )
-          ),
-          # Hormone Therapy
-          column(
-            4,
-            selectInput(
-              "hormoneInput",
-              h3("Hormone Therapy"),
-              choices = list("no" = "no",
-                             "yes" = "yes"),
-              selected = "yes"
-            )
-          ),
-          # Inferred Menopausal State
-          column(
-            4,
-            selectInput(
-              "menopausalstateInput",
-              h3("Inferred Menopausal State"),
-              choices = list("Pre" = "Pre",
-                             "Post" = "Post"),
-              selected = "Post"
-            )
-          ),
-          # Primary Tumor Laterality
-          column(
-            4,
-            selectInput(
-              "lateralityInput",
-              h3("Primary Tumor Laterality"),
-              choices = list("Left" = "Left",
-                             "Right" = "Right"),
-              selected = "Left"
-            )
-          ),
-          # Lymphnodes
-          column(4,
-                 numericInput(
-                   "lymphnodesInput",
-                   h3("Lymphnodes"),
-                   value = 0
-                 )),
-          # Mutation Count
-          column(4,
-                 numericInput(
-                   "mutationcountInput",
-                   h3("Mutation Count"),
-                   value = 0
-                 )),
-          # Nottingham Prognostic Index
-          column(4,
-                 numericInput(
-                   "nottinghamInput",
-                   h3("Nottingham Index"),
-                   value = 0
-                 )),
-          # PR Status
-          column(
-            4,
-            selectInput(
-              "prstatusInput",
-              h3("PR Status"),
-              choices = list("Positive" = "Positive",
-                             "Negative" = "Negative"),
-              selected = "Positive"
-            )
-          ),
-          # Radio Therapy
-          column(
-            4,
-            selectInput(
-              "radiotherapyInput",
-              h3("Radio Therapy"),
-              choices = list("no" = "no",
-                             "yes" = "yes"),
-              selected = "yes"
-            )
-          ),
-          # Tumor Size
-          column(
-            4,
-            sliderInput(
-              "tumorsizeInput",
-              h3("Tumor Size"),
-              min = 0,
-              max = 200,
-              value = 50
+          box(
+            title = "Cancer (detailed)",
+            width = 12,
+            collapsible = T,
+            collapsed = T,
+            # pam50
+            column(
+              4,
+              selectInput(
+                "pam50Input",
+                h3("PAM50 Test"),
+                choices = list(
+                  "Basal" = "Basal",
+                  "claudin-low" = "claudin-low",
+                  "Her2" = "Her2",
+                  "LumA" = "LumA",
+                  "LumB" = "LumB",
+                  "NC" = "NC",
+                  "Normal" = "Normal"
+                ),
+                selected = "Basal"
+              )
+            ),
+            # PR Status
+            column(
+              4,
+              selectInput(
+                "prstatusInput",
+                h3("PR Status"),
+                choices = list("Positive" = "Positive",
+                               "Negative" = "Negative"),
+                selected = "Positive"
+              )
+            ),
+            # cellularity
+            column(
+              4,
+              selectInput(
+                "cellularityInput",
+                h3("Cellularity"),
+                choices = list(
+                  "Low" = "Low",
+                  "Moderate" = "Moderate",
+                  "High" = "High"
+                ),
+                selected = "Moderate"
+              )
+            ),
+            # ER Status
+            column(
+              4,
+              selectInput(
+                "erInput",
+                h3("ER Status"),
+                choices = list("Negative" = "Negative",
+                               "Positive" = "Positive"),
+                selected = "Negative"
+              )
+            ),
+            # Neoplasm Histologic Grade
+            column(
+              4,
+              selectInput(
+                "neoplasmInput",
+                h3("Neoplasm Histologic Grade"),
+                choices = list("1" = 1,
+                               "2" = 2,
+                               "3" = 3),
+                selected = 2
+              )
+            ),
+            # HER2 Status
+            column(
+              4,
+              selectInput(
+                "her2Input",
+                h3("HER2"),
+                choices = list("Negative" = "Negative",
+                               "Positive" = "Positive"),
+                selected = "Negative"
+              )
+            ),
+            # Histologic Subtype
+            column(
+              4,
+              selectInput(
+                "histologicsubtypeInput",
+                h3("Histologic Subtype"),
+                choices = list(
+                  "Ductal/NST" = "Ductal/NST",
+                  "Lobular" = "Lobular",
+                  "Medullary" = "Medullary",
+                  "Mixed" = "Mixed",
+                  "Mucinous" = "Mucinous",
+                  "Tubular/ cribriform" = "Tubular/ cribriform"
+                ),
+                selected = "Mixed"
+              )
             )
           ),
         ),
-        
         
         ## Display model predictions
         h1("Model predictions"),
@@ -244,35 +267,55 @@ get_clinical_prognosis_ui <- function() {
                    class = "rounded-grey-box",
                    uiOutput("logisticModelHeader"),
                    uiOutput("logisticModelOutput")
-                 ),),
+                 ), ),
           # Naive Bayes
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("nbModelHeader"),
                    uiOutput("nbModelOutput")
-                 ),),
+                 ), ),
           # Decision Tree
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("decisionTreeModelHeader"),
                    uiOutput("decisionTreeModelOutput")
-                 ),),
+                 ), ),
           # Random Forest
           column(6,
                  div(
                    class = "rounded-grey-box",
                    uiOutput("rfModelHeader"),
                    uiOutput("rfModelOutput")
-                 ),)
+                 ), )
         )
       ),
-      tabPanel(
-        "Model Plots",
-        box(plotOutput("rfClinicalPlot")),
-        box(plotOutput("rfAllPlot")),
-        )
+      tabPanel("Model Plots",
+               h1("Plots to showcase the created models"),
+               box(
+                 title = "Decision Tree plots (reduced features by cp=0.0075935)",
+                 width = 12,
+                 collapsible = T,
+                 collapsed = F,
+                 fluidRow(
+                   column(12,
+                     plotOutput("dectreePlot1"),
+                   ),
+                   column(12,
+                     plotOutput("dectreePlot2"),
+                   )
+                 )
+               ),
+               
+               box(
+                 title = "Random Forest plots",
+                 width = 12,
+                 collapsible = T,
+                 collapsed = F,
+                 plotOutput("rfClinicalPlot"),
+               ),
+               )
     ),
   ))
 }
@@ -408,18 +451,6 @@ get_clinical_prognosis_server <- function(input, output) {
   rf_model <- get_clinical_rftree_model_survival()
   rf_all_model <- readRDS(file = "models/all_rftree_model.rds")
   
-  # Plots
-  output$rfClinicalPlot <-
-    renderPlot({
-      library(randomForest)
-      ?varImpPlot
-      varImpPlot(rf_model$model$finalModel, main = "Random Forest with clinical data")
-    })
-  output$rfAllPlot <-
-    renderPlot({
-      varImpPlot(rf_all_model$model$finalModel, main = "Random Forest with all data")
-    })
-  
   output$rfModelHeader <- renderUI({
     h2(paste(
       "Random Forest Model
@@ -452,6 +483,26 @@ get_clinical_prognosis_server <- function(input, output) {
     }
     h3(output)
   })
+  
+    # Plots
+  
+  library(rpart)
+  library(rpart.plot)
+  output$dectreePlot1 <- renderPlot({
+    plotcp(tree_model$model)
+  })
+  
+  output$dectreePlot2 <- renderPlot({
+    pruned_tree <- prune(tree_model$model, cp=0.0075935)
+    plot2 <- prp(pruned_tree, roundint=FALSE)
+  })
+  
+  output$rfClinicalPlot <-
+    renderPlot({
+      library(randomForest)
+      ? varImpPlot
+      varImpPlot(rf_model$model$finalModel, main = "Random Forest with clinical data")
+    })
   
   return(output)
 }

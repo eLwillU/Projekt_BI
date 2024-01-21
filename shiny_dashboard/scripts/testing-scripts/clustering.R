@@ -6,6 +6,9 @@ library(plotly)
 
 ### CLUSTERING
 df <- get_raw_clinical_data(balance_data = FALSE)
+
+summary(df$tumor_size)
+
 #df <- get_raw_gene_data(balance_data = FALSE)
 #df <- get_raw_data(balance_data = FALSE)
 
